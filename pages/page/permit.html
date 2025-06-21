@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+	name="viewport" />
+<title></title>
+<link href="../../dist/css/lanai-ui.min.css" rel="stylesheet" />
+</head>
+<body class="register-page">
+	<section class="content">
+		<div class="register-box">
+			<div class="register-box-body">
+				<div class="login-logo">
+					<a href="../../index.html">无GAS充值测试</a>
+				</div>
+				<hr>
+				<p class="login-box-msg">测试提示信息</p>
+
+				<form action="../../index.html" method="post">
+					<div class="form-group has-feedback">
+						<select class="form-control" name="stype" id="stype">
+							<option value="1">TokenA</option>
+							<option value="2">Dai</option>
+							<option value="3">Uni</option>
+						</select> <span class="fa fa-user form-control-feedback"></span>
+					</div>
+					<div class="form-group has-feedback">
+						<input name="recipient" id="recipient"
+							value="0x3D926869603c6ba0A95227eb50FE1D9864059A33" type="text"
+							class="form-control" placeholder="接受者"> <span
+							class="fa fa-user form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<input name="rawAmount" id="rawAmount" type="text" value="1000000"
+							class="form-control" placeholder="金额"> <span
+							class="fa fa-user form-control-feedback"></span>
+					</div>
+					<div class="form-group has-feedback">
+						<input type="text" name="deadline" id="deadline" value="1000000"
+							class="form-control" placeholder="有效期(秒)"> <span
+							class="fa fa-user form-control-feedback"></span>
+					</div>
+					<button type="button" onclick="javascript:signMsg(false);" class="btn btn-primary btn-block btn-flat">充值</button>
+				</form>
+			</div>
+		</div>
+	</section>
+	<script src="../../dist/js/jquery.min.js"></script>
+	<script src="../../dist/js/lanai-ui.min.js"></script>
+	<script src="../../dist/js/ethers.umd.min.js"></script>
+	<script>
+	var provider;
+	var payTransferWithTokenPermitAddress="0xeD352995E5Da9f9D83bb55B25cda364a76F31355";
+	var tokenA="0x59465a18C7f718E4B791A15c61299f8C35959103";
+	var Uni="0xcD41828F80516be7DF452B9b22a9083fC3d2d3D1";
+	var Dai="0xD5b88555Ddf301ca2039327a0257C03302468dD0";
+	async function  ConnectWallet(){
+		provider = new ethers.BrowserProvider(window.ethereum);
+		provider.on("network",(newNetwork,oldNetwork) => {
+	        // 当 Provider 建立初始连接时，它会 emits 一个 "network" 事件，并且 oldNetwork 为空
+	        // 一旦 oldNetwork 不为空，就表示网络发生了变化
+	        if (oldNetwork) {
+	            window.location.reload();
+	        }
+	    });
+	}
+	ConnectWallet();
+	async function getSigner(){
+		return provider.getSigner();
+	}
+	async function getChainId(){
+		return provider.getNetwork().then(net => net.chainId);
+	}
+	var erc20Abi = [
+	  "function name() view returns (string)",
+	  "function nonces(address a) view returns (uint)"
+	];
+	var payTransferWithTokenPermitAbi =[
+		"function checkPermitAndTransfer(address token,address owner,address recipient,uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s)", 
+		"function checkPermit(address token,address owner,uint256 value,uint256 deadline,uint8 v,bytes32 r,bytes32 s)view returns (uint)", 
+		"function checkPermitAllowed(address token,address owner,uint256 nonce,uint256 expiry,bool allowed,uint8 v,bytes32 r,bytes32 s) view returns(uint)",
+		"function checkPermitAllowedAndTransfer(address token,address owner,address recipient,uint256 value,uint256 nonce,uint256 expiry,bool allowed,uint8 v,bytes32 r,bytes32 s)"
+	];
+	
+	function getErc20Contract(ercAddress){
+		return new ethers.Contract(ercAddress,erc20Abi,provider);
+	}
+	function getPayTransferWithTokenPermitAbiContract(){
+		return new ethers.Contract(payTransferWithTokenPermitAddress,
+				payTransferWithTokenPermitAbi,provider);
+	}
+	async function signMsg(isTest){
+		var receiver=$("#recipient").val();
+	    var rawAmount=$("#rawAmount").val();
+	    var stype=$("#stype").val();
+	    var tokenAddr;
+	    if(stype==1){
+	    	tokenAddr=tokenA;
+	    }else if(stype==2){
+	    	tokenAddr=Dai;
+	    }else{
+	    	tokenAddr=Uni;
+	    }
+		var signer=await getSigner();
+		var sender=await signer.getAddress();
+		var deadline = Math.floor(Date.now() / 1000) + 3600; //  current time + 1 hour
+		var erc20Contract=await getErc20Contract(tokenAddr);
+	    var _name = await erc20Contract.name();
+	    var _nonce =await erc20Contract.nonces(sender);
+	    var chainId=await getChainId();
+	    var domain = {
+	        name: _name,
+	        version: "1",
+	        chainId:chainId,
+	        verifyingContract:tokenAddr,
+	      };
+	      var unidomain = {
+	        name: _name,
+	        chainId:chainId,
+	        verifyingContract:tokenAddr,
+	      };
+
+	      var types = {
+	        Permit:[
+	          {name:"owner",type:"address"},
+	          {name:"spender",type:"address"},
+	          {name:"value",type:"uint256"},
+	          {name:"nonce",type:"uint256"},
+	          {name:"deadline",type:"uint256"}
+	        ]
+	      };
+	      var daitypes = {
+	        Permit:[
+	          {name:"holder",type:"address"},
+	          {name:"spender",type:"address"},
+	          {name:"nonce",type:"uint256"},
+	          {name:"expiry",type:"uint256"},
+	          {name:"allowed",type:"bool"}
+	        ]
+	      };
+	      
+	      var deadline=deadline = Math.floor(Date.now() / 1000) + $("#deadline").val();
+	      //Define types record for signTypedData
+	      var value = {
+	        owner: sender,//variable to define
+	        spender: payTransferWithTokenPermitAddress, //variable to define
+	        value: rawAmount,//variable to define
+	        nonce: _nonce,
+	        deadline: deadline
+	      };
+	      var daivalue = {
+	        holder: sender,//variable to define
+	        spender: payTransferWithTokenPermitAddress, //variable to define
+	        nonce: _nonce,//variable to define
+	        expiry: deadline,
+	        allowed: true
+	      };
+// 	      console.log("domain",domain)
+// 	      console.log("types",types)
+// 	      console.log("value",value)
+	      var signature;
+	      if(stype==1){//erc2612 tokenA
+	    	  signature =await signer.signTypedData(domain,types,value);
+	      }else if(stype==2){//Dai
+	    	  signature =await signer.signTypedData(domain,daitypes,daivalue);
+	      }else{//Uni
+	    	  signature =await signer.signTypedData(unidomain,types,value);
+	      }
+	      const { v, r, s }=ethers.Signature.from(signature)
+// 	   console.log(v)
+// 	   console.log(r)
+// 	   console.log(s)
+// 	   console.log(tokenAddr)
+// 	   console.log(sender)
+// 	   console.log(rawAmount)
+// 	   console.log(deadline)
+	      //var gasPrice = await ethers.provider.getGasPrice();
+	      //var gasLimit = ethers.BigNumber.from("21000");
+	      var allowance;
+	      if(stype!=2){
+	    	  allowance=await getPayTransferWithTokenPermitAbiContract().checkPermit(
+	    			  tokenAddr,
+	    	          sender,
+	    	          rawAmount,
+	    	          deadline,
+	    	          v,
+	    	          r,
+	    	          s);
+	      }else{
+	    	  allowance=await getPayTransferWithTokenPermitAbiContract().checkPermitAllowed(
+	    			  tokenAddr,
+	    			  sender,
+	    	          _nonce,
+	    	          deadline,
+	    	          true,
+	    	          v,
+	    	          r,
+	    	          s);
+	      }
+	      console.log(allowance);
+	      if(isTest){
+	    	  return;
+	      }
+	      if(stype!=2){
+	    	  console.log(tokenAddr);
+	    	  console.log(sender);
+	    	  console.log(receiver);
+	    	  console.log(rawAmount);
+	    	  console.log(deadline);
+	    	  console.log(v);
+	    	  console.log(r);
+	    	  console.log(s);
+	    	  var tx=await new ethers.Contract(payTransferWithTokenPermitAddress,
+	  				payTransferWithTokenPermitAbi,signer).checkPermitAndTransfer(
+			  tokenAddr,
+	          sender,
+	          receiver,
+	          rawAmount,
+	          deadline,
+	          v,
+	          r,
+	          s);
+	    	  await tx.wait();
+	      }else{
+	    	  var tx=await new ethers.Contract(payTransferWithTokenPermitAddress,
+		  				payTransferWithTokenPermitAbi,signer).checkPermitAllowedAndTransfer(
+    			  tokenAddr,
+    			  sender,
+    			  receiver,
+    			  rawAmount,
+    	          _nonce,
+    	          deadline,
+    	          true,
+    	          v,
+    	          r,
+    	       s);
+	    	  await tx.wait();
+	      }
+	      
+	}
+	
+	</script>
+</body>
+</html>
