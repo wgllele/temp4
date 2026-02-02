@@ -32,7 +32,13 @@
 						   class="form-control" placeholder="用户地址"> <span
 						class="fa fa-user form-control-feedback"></span>
 				</div>
-				<button type="button" onclick="javascript:getNonce();" class="btn btn-primary btn-block btn-flat">签名</button>
+				<div class="form-group has-feedback">
+					<input name="nonceValue" id="nonceValue"
+						   value="" type="text"
+						   class="form-control" placeholder="nonce值"> <span
+						class="fa fa-user form-control-feedback"></span>
+				</div>
+				<button type="button" onclick="javascript:getNonce();" class="btn btn-primary btn-block btn-flat">获取nonce</button>
 				<button type="button" onclick="javascript:signMsg();" class="btn btn-primary btn-block btn-flat">签名</button>
 			</form>
 		</div>
@@ -59,7 +65,7 @@
 			const nonce = await contract.nonces(userAddress).call();
 
 			console.log("当前 Nonce:", nonce.toString());
-			return nonce.toString();
+			$("#nonceValue").val( nonce.toString());
 		} catch (error) {
 			console.error("查询 Nonce 失败:", error);
 		}
