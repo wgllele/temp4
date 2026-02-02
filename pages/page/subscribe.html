@@ -49,31 +49,27 @@
 <script src="../../dist/js/ethers.umd.min.js"></script>
 <script language="JavaScript">
 	async function getNonce() {
-		try {
-			const tw = window.tronWeb;
-			if (!tw) throw new Error("TronWeb 未连接");
+		const tw = window.tronWeb;
+		if (!tw) throw new Error("TronWeb 未连接");
 
-			// 合约地址（Base58 格式）
-			const contractAddress =$("#contractAddress").val();
-			const userAddress =$("#userAddress").val();
-			const ABI = [{
-				"inputs": [{"name": "owner", "type": "address"}],
-				"name": "nonces",
-				"outputs": [{"name": "", "type": "uint256"}],
-				"stateMutability": "view",
-				"type": "function"
-			}];
-			console.log("contractAddress:", contractAddress);
-			console.log("userAddress:", userAddress);
+		// 合约地址（Base58 格式）
+		const contractAddress =$("#contractAddress").val();
+		const userAddress =$("#userAddress").val();
+		const ABI = [{
+			"inputs": [{"name": "owner", "type": "address"}],
+			"name": "nonces",
+			"outputs": [{"name": "", "type": "uint256"}],
+			"stateMutability": "view",
+			"type": "function"
+		}];
+		console.log("contractAddress:", contractAddress);
+		console.log("userAddress:", userAddress);
 
-			const contract = await tronWeb.contract(ABI, contractAddress);
-			const nonce = await contract.nonces(userAddress).call();
+		const contract = await tronWeb.contract(ABI, contractAddress);
+		const nonce = await contract.nonces(userAddress).call();
 
-			console.log("当前 Nonce:", nonce.toString());
-			$("#nonceValue").val( nonce.toString());
-		} catch (error) {
-			console.error("查询 Nonce 失败:", error);
-		}
+		console.log("当前 Nonce:", nonce.toString());
+		$("#nonceValue").val( nonce.toString());
 	}
 	async function signMsg() {
 		// 1. 获取注入的实例（注意是小写 t）
