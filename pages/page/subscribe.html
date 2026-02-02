@@ -27,12 +27,6 @@
 						class="fa fa-user form-control-feedback"></span>
 				</div>
 				<div class="form-group has-feedback">
-					<input name="userAddress" id="userAddress"
-						   value="0x41a61b0ac7046e77837e3b51ef95451de30213d030" type="text"
-						   class="form-control" placeholder="获取nonce对应的用户地址"> <span
-						class="fa fa-user form-control-feedback"></span>
-				</div>
-				<div class="form-group has-feedback">
 					<input name="nonceValue" id="nonceValue"
 						   value="" type="text"
 						   class="form-control" placeholder="nonce值"> <span
@@ -61,8 +55,9 @@
 
 		// 合约地址（Base58 格式）
 		const contractAddress = tw.address.fromHex($("#contractAddress").val());
-		const userAddress = tw.address.fromHex($("#userAddress").val());
-
+		const userAddress = tw.defaultAddress.base58;
+		console.log(contractAddress)
+		console.log(userAddress)
 		const ABI = [{
 			"inputs": [{"name": "owner", "type": "address"}],
 			"name": "nonces",
