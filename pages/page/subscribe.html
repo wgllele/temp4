@@ -67,7 +67,7 @@
 			// 将你的 Hex 地址转换为 Base58
 			const contractAddr = tronWeb.address.fromHex("0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7");
 			const contract = await tronWeb.contract(ABI, contractAddr);
-			const nonce = await contract.nonces("用户地址").call();
+			const nonce = await contract.nonces(userAddress).call();
 			// 1. 实例化合约对象
 			//const contract = await tw.contract(minABI, contractAddress);
 
