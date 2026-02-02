@@ -22,7 +22,7 @@
 			<form action="../../index.html" method="post">
 				<div class="form-group has-feedback">
 					<input name="contractAddress" id="contractAddress"
-						   value="0x41a61b0ac7046e77837e3b51ef95451de30213d030" type="text"
+						   value="TSSMHYeV2uE9qYH95DqyoCcNCzH249SBAw" type="text"
 						   class="form-control" placeholder="订阅合约地址"> <span
 						class="fa fa-user form-control-feedback"></span>
 				</div>
@@ -54,7 +54,7 @@
 		}
 
 		// 合约地址（Base58 格式）
-		const contractAddress = tw.address.fromHex($("#contractAddress").val());
+		const contractAddress = $("#contractAddress").val();
 		const userAddress = tw.defaultAddress.base58;
 		console.log(contractAddress)
 		console.log(userAddress)
