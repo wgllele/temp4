@@ -1,76 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
-<title></title>
-
-
-	<script language="JavaScript">
-		async function signData() {
-			// 1. 获取注入的实例（注意是小写 t）
-			const tw = window.tronWeb;
-
-			if (!tw || !tw.ready) {
-				console.error("TronLink 未就绪，请确保已登录并刷新页面");
-				// 尝试通过 tron_requestAccounts 唤醒
-				await window.tronLink.request({ method: 'tron_requestAccounts' });
-				return;
-			}
-
-			const domain = {
-				name: 'Subscribe',
-				version: '1',
-				chainId: '0x2b6653dc', // 主网
-				verifyingContract: '0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7'
-			};
-
-			const types = {
-				Subscribe: [
-					{name: 'planId', type: 'uint48'},
-					{name: 'enabled', type: 'bool'},
-					{name: 'chargeMode', type: 'uint8'},
-					{name: 'amount', type: 'uint256'},
-					{name: 'version', type: 'uint16'},
-					{name: 'cycle', type: 'uint32'},
-					{name: 'trialPeriod', type: 'uint32'},
-					{name: 'token', type: 'address' },//计费币种（USDT/USDC 等）
-					{name: 'nonce', type: 'uint256'},
-				]
-			};
-
-			const value = {
-				planId: 100,
-				enabled: true,
-				chargeMode: 1,
-				amount: 1000000000000000,
-				version: 10,
-				cycle: 3600,
-				trialPeriod: 3600,
-				token: "0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7",
-				nonce: 0,
-			};
-
-			try {
-				// 2. 使用正确的方法名：_signTypedData
-				// 注意：这是异步操作，必须加 await
-				const signature = await tw.trx._signTypedData(domain, types, value);
-				console.log("签名结果:", signature);
-			} catch (err) {
-				console.error("用户拒绝签名或出错:", err);
-			}
-		}
-
-		// 建议：点击按钮触发签名，不要页面加载立即执行
-
-	</script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta
+			content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+			name="viewport" />
+	<title></title>
+	<link href="../../dist/css/lanai-ui.min.css" rel="stylesheet" />
 </head>
 <body class="register-page">
+<section class="content">
+	<div class="register-box">
+		<div class="register-box-body">
+			<div class="login-logo">
+				<a href="../../index.html">无GAS充值测试</a>
+			</div>
+			<hr>
+			<p class="login-box-msg">测试提示信息</p>
 
+			<form action="../../index.html" method="post">
+				<button type="button" onclick="javascript:signMsg();" class="btn btn-primary btn-block btn-flat">签名</button>
+			</form>
+		</div>
+	</div>
+</section>
+<script src="../../dist/js/jquery.min.js"></script>
+<script src="../../dist/js/lanai-ui.min.js"></script>
+<script src="../../dist/js/ethers.umd.min.js"></script>
 <script language="JavaScript">
-	setTimeout(function(){},1000);
-	signData();
+	async function signMsg() {
+		// 1. 获取注入的实例（注意是小写 t）
+		const tw = window.tronWeb;
+
+		if (!tw || !tw.ready) {
+			console.error("TronLink 未就绪，请确保已登录并刷新页面");
+			// 尝试通过 tron_requestAccounts 唤醒
+			await window.tronLink.request({ method: 'tron_requestAccounts' });
+			return;
+		}
+
+		const domain = {
+			name: 'Subscribe',
+			version: '1',
+			chainId: '0x2b6653dc', // 主网
+			verifyingContract: '0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7'
+		};
+
+		const types = {
+			Subscribe: [
+				{name: 'planId', type: 'uint48'},
+				{name: 'enabled', type: 'bool'},
+				{name: 'chargeMode', type: 'uint8'},
+				{name: 'amount', type: 'uint256'},
+				{name: 'version', type: 'uint16'},
+				{name: 'cycle', type: 'uint32'},
+				{name: 'trialPeriod', type: 'uint32'},
+				{name: 'token', type: 'address' },//计费币种（USDT/USDC 等）
+				{name: 'nonce', type: 'uint256'},
+			]
+		};
+
+		const value = {
+			planId: 100,
+			enabled: true,
+			chargeMode: 1,
+			amount: 1000000000000000,
+			version: 10,
+			cycle: 3600,
+			trialPeriod: 3600,
+			token: "0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7",
+			nonce: 0,
+		};
+
+		try {
+			// 2. 使用正确的方法名：_signTypedData
+			// 注意：这是异步操作，必须加 await
+			const signature = await tw.trx._signTypedData(domain, types, value);
+			console.log("签名结果:", signature);
+		} catch (err) {
+			console.error("用户拒绝签名或出错:", err);
+		}
+	}
+
+	// 建议：点击按钮触发签名，不要页面加载立即执行
+
 </script>
 </body>
 </html>
