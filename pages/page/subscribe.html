@@ -54,7 +54,7 @@
 		}
 
 		// 合约地址（Base58 格式）
-		const contractAddress = $("#contractAddress").val();
+		const contractAddress = $("#contractAddress").val().trim();
 		const userAddress = tw.defaultAddress.base58;
 		console.log(contractAddress)
 		const ABI = [{
@@ -65,7 +65,7 @@
 			"type": "function"
 		}];
 
-		const contract = await tronWeb.contract(ABI, contractAddress.trim());
+		const contract = await tronWeb.contract(ABI, contractAddress);
 		const nonce = await contract.nonces(userAddress).call();
 
 		console.log("当前 Nonce:", nonce.toString());
