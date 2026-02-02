@@ -27,10 +27,7 @@
 						class="fa fa-user form-control-feedback"></span>
 				</div>
 				<div class="form-group has-feedback">
-					<input name="nonceValue" id="nonceValue"
-						   value="" type="text"
-						   class="form-control" placeholder="nonce值"> <span
-						class="fa fa-user form-control-feedback"></span>
+					<div id="nonceValue" ></div>
 				</div>
 				<button type="button" onclick="javascript:getNonce();" class="btn btn-primary btn-block btn-flat">获取当前账户nonce</button>
 				<button type="button" onclick="javascript:signMsg();" class="btn btn-primary btn-block btn-flat">签名</button>
@@ -72,7 +69,7 @@
 		const nonce = await contract.nonces(userAddress).call();
 
 		console.log("当前 Nonce:", nonce.toString());
-		$("#nonceValue").val("账户["+userAddress+"]的nonce为："+ nonce.toString());
+		$("#nonceValue").html("账户["+userAddress+"]的nonce为："+ nonce.toString());
 	}
 	async function signMsg() {
 		// 1. 获取注入的实例（注意是小写 t）
