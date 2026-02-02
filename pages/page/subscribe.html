@@ -22,7 +22,7 @@
 			<form action="../../index.html" method="post">
 				<div class="form-group has-feedback">
 					<input name="contractAddress" id="contractAddress"
-						   value="TEkxiS7pZbtMfsRUEYksBgWfeUFCp4hf6D" type="text"
+						   value="0xcd0e123611804f56f6630f612030062450892211" type="text"
 						   class="form-control" placeholder="订阅合约地址"> <span
 						class="fa fa-user form-control-feedback"></span>
 				</div>
@@ -54,7 +54,7 @@
 		}
 
 		// 合约地址（Base58 格式）
-		const contractAddress = $("#contractAddress").val().trim();
+		let contractAddress = $("#contractAddress").val().trim();
 		const userAddress = tw.defaultAddress.base58;
 		console.log(contractAddress)
 		const ABI = [{
@@ -64,8 +64,11 @@
 			"stateMutability": "view",
 			"type": "function"
 		}];
-
-		const contract = await tronWeb.contract(ABI, contractAddress);
+		if (contractAddress.startsWith('0x')) {
+			contractAddress = contractAddress.substring(2);
+		}
+		const base58Addr = tw.address.fromHex(contractAddress);
+		const contract = await tronWeb.contract(ABI, base58Addr);
 		const nonce = await contract.nonces(userAddress).call();
 
 		console.log("当前 Nonce:", nonce.toString());
