@@ -48,36 +48,46 @@
 <script src="../../dist/js/lanai-ui.min.js"></script>
 <script src="../../dist/js/ethers.umd.min.js"></script>
 <script language="JavaScript">
-	// 1. 获取注入的实例（注意是小写 t）
-	const tw = window.tronWeb;
-
-	if (!tw || !tw.ready) {
-		console.error("TronLink 未就绪，请确保已登录并刷新页面");
-		// 尝试通过 tron_requestAccounts 唤醒
-		await window.tronLink.request({ method: 'tron_requestAccounts' });
-		console.error("出错:");
-	}
-
-	// 合约地址（Base58 格式）
-	const contractAddress = tw.address.fromHex($("#contractAddress").val());
-	const userAddress = $("#userAddress").val();
-
-	const ABI = [{
-		"inputs": [{"name": "owner", "type": "address"}],
-		"name": "nonces",
-		"outputs": [{"name": "", "type": "uint256"}],
-		"stateMutability": "view",
-		"type": "function"
-	}];
-
-	const contract = await tronWeb.contract(ABI, contractAddress);
-
 	async function getNonce() {
+		// 1. 获取注入的实例（注意是小写 t）
+		const tw = window.tronWeb;
+
+		if (!tw || !tw.ready) {
+			console.error("TronLink 未就绪，请确保已登录并刷新页面");
+			// 尝试通过 tron_requestAccounts 唤醒
+			await window.tronLink.request({ method: 'tron_requestAccounts' });
+			return;
+		}
+
+		// 合约地址（Base58 格式）
+		const contractAddress = tw.address.fromHex($("#contractAddress").val());
+		const userAddress = $("#userAddress").val();
+
+		const ABI = [{
+			"inputs": [{"name": "owner", "type": "address"}],
+			"name": "nonces",
+			"outputs": [{"name": "", "type": "uint256"}],
+			"stateMutability": "view",
+			"type": "function"
+		}];
+
+		const contract = await tronWeb.contract(ABI, contractAddress);
 		const nonce = await contract.nonces(userAddress).call();
+
 		console.log("当前 Nonce:", nonce.toString());
 		$("#nonceValue").val( nonce.toString());
 	}
 	async function signMsg() {
+		// 1. 获取注入的实例（注意是小写 t）
+		const tw = window.tronWeb;
+
+		if (!tw || !tw.ready) {
+			console.error("TronLink 未就绪，请确保已登录并刷新页面");
+			// 尝试通过 tron_requestAccounts 唤醒
+			await window.tronLink.request({ method: 'tron_requestAccounts' });
+			return;
+		}
+
 		const domain = {
 			name: 'Subscribe',
 			version: '1',
