@@ -28,7 +28,6 @@
 					{name: 'version', type: 'uint16'},//方案版本号，商户每修改一次 +1
 					{name: 'cycle', type: 'uint32'},//周期（单位：秒，如周 = 7*86400）
 					{name: 'trialPeriod', type: 'uint32'},//周期（单位：秒，如周 = 7*86400）,大于零代表试用状态，等于零代表非试用状态
-					{name: 'token', type: 'address'},//计费币种（USDT/USDC 等）
 					{name: 'nonce', type: 'uint256'},//nonce 自增的数字
 				]
 			};
@@ -42,7 +41,6 @@
 				version: 10,
 				cycle: 3600,
 				trialPeriod: 3600,
-				token: '0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7',
 				nonce: 0,
 			};
 			const msgParams = JSON.stringify({
