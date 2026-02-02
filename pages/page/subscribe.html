@@ -69,7 +69,9 @@
 		const nonce = await contract.nonces(userAddress).call();
 
 		console.log("当前 Nonce:", nonce.toString());
-		$("#nonceValue").html("账户["+userAddress+"]的nonce为："+ nonce.toString());
+		$("#nonceValue").html("账户["+userAddress+"]在合约[" +
+				base58Addr +
+				"]上的nonce为："+ nonce.toString());
 	}
 	async function signMsg() {
 		// 1. 获取注入的实例（注意是小写 t）
