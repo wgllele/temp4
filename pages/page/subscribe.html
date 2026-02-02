@@ -11,9 +11,6 @@
 
 	<script language="JavaScript">
 		const tronWeb =window.TronWeb;
-
-		function signMsg() {
-// 作用域中的所有属性都是可选的
 			const domain = {
 				name: 'Subscribe',
 				version: '1',
@@ -55,15 +52,6 @@
 				message: value
 			});
 
-
-			const signature = tronWeb.Trx.request({
-				method: 'tron_signTypedData',
-				params: [tronWeb.defaultAddress.base58, msgParams]
-			});
-			//const signature = tronWeb.Trx._signTypedData(domain, types, value);
-			console.log("signature ", signature);
-		}
-		signMsg();
 	</script>
 </head>
 <body class="register-page">
