@@ -8,9 +8,13 @@
 	name="viewport" />
 <title></title>
 <link href="../../dist/css/lanai-ui.min.css" rel="stylesheet" />
+	<script src="../../dist/js/jquery.min.js"></script>
+	<script src="TronWeb.js"></script>
+	<script src="../../dist/js/lanai-ui.min.js"></script>
+	<script src="../../dist/js/ethers.umd.min.js"></script>
 	<script language="JavaScript">
+		const { TronWeb } = require('tronweb');
 		function signMsg(isTest){
-			const { TronWeb } = require('tronweb');
 // 作用域中的所有属性都是可选的
 			const domain = {
 				name: 'Subscribe',
@@ -91,9 +95,7 @@
 			</div>
 		</div>
 	</section>
-	<script src="../../dist/js/jquery.min.js"></script>
-	<script src="../../dist/js/lanai-ui.min.js"></script>
-	<script src="../../dist/js/ethers.umd.min.js"></script>
+
 
 </body>
 </html>
