@@ -65,7 +65,7 @@
 			"type": "function"
 		}];
 
-		const contract = await tronWeb.contract(ABI, contractAddress);
+		const contract = await tronWeb.contract(ABI, contractAddress.trim());
 		const nonce = await contract.nonces(userAddress).call();
 
 		console.log("当前 Nonce:", nonce.toString());
