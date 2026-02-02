@@ -53,8 +53,9 @@
 		if (!tw) throw new Error("TronWeb 未连接");
 
 		// 合约地址（Base58 格式）
-		const contractAddress =$("#contractAddress").val();
-		const userAddress =$("#userAddress").val();
+		const contractAddress = tw.address.fromHex($("#contractAddress").val());
+		const userAddress = tw.address.fromHex($("#userAddress").val());
+
 		const ABI = [{
 			"inputs": [{"name": "owner", "type": "address"}],
 			"name": "nonces",
@@ -62,8 +63,6 @@
 			"stateMutability": "view",
 			"type": "function"
 		}];
-		console.log("contractAddress:", contractAddress);
-		console.log("userAddress:", userAddress);
 
 		const contract = await tronWeb.contract(ABI, contractAddress);
 		const nonce = await contract.nonces(userAddress).call();
