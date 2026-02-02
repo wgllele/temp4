@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+	name="viewport" />
+<title></title>
+<link href="../../dist/css/lanai-ui.min.css" rel="stylesheet" />
+</head>
+<body class="register-page">
+	<section class="content">
+		<div class="register-box">
+			<div class="register-box-body">
+				<div class="login-logo">
+					<a href="../../index.html">订阅测试</a>
+				</div>
+				<hr>
+				<p class="login-box-msg">测试提示信息</p>
+
+				<form action="../../index.html" method="post">
+					<div class="form-group has-feedback">
+						<select class="form-control" name="stype" id="stype">
+							<option value="1">TokenA</option>
+							<option value="2">Dai</option>
+							<option value="3">Uni</option>
+						</select> <span class="fa fa-user form-control-feedback"></span>
+					</div>
+					<div class="form-group has-feedback">
+						<input name="recipient" id="recipient"
+							value="0x3D926869603c6ba0A95227eb50FE1D9864059A33" type="text"
+							class="form-control" placeholder="接受者"> <span
+							class="fa fa-user form-control-feedback"></span>
+					</div>
+
+					<div class="form-group has-feedback">
+						<input name="rawAmount" id="rawAmount" type="text" value="1000000"
+							class="form-control" placeholder="金额"> <span
+							class="fa fa-user form-control-feedback"></span>
+					</div>
+					<div class="form-group has-feedback">
+						<input type="text" name="deadline" id="deadline" value="1000000"
+							class="form-control" placeholder="有效期(秒)"> <span
+							class="fa fa-user form-control-feedback"></span>
+					</div>
+					<button type="button" onclick="javascript:signMsg(false);" class="btn btn-primary btn-block btn-flat">充值</button>
+				</form>
+			</div>
+		</div>
+	</section>
+	<script src="../../dist/js/jquery.min.js"></script>
+	<script src="../../dist/js/lanai-ui.min.js"></script>
+	<script src="../../dist/js/ethers.umd.min.js"></script>
+	<script>
+
+	async function signMsg(isTest){
+		const { TronWeb } = require('tronweb');
+// 作用域中的所有属性都是可选的
+		const domain = {
+			name: 'Subscribe',
+			version: '1',
+			chainId: '0x2b6653dc',
+			verifyingContract: '0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7'
+		};
+		console.log("domain",domain)
+		// 所有类型定义的name列表
+		const types = {
+			Subscribe: [
+				{ name: 'planId', type: 'uint48' },
+				{ name: 'enabled', type: 'bool' },//是否启用
+				{ name: 'chargeMode', type: 'uint8' },//扣费模式（0=先扣后用，1=先用后扣）
+				{ name: 'amount', type: 'uint256' },//单周期扣款金额
+				{ name: 'version', type: 'uint16' },//方案版本号，商户每修改一次 +1
+				{ name: 'cycle', type: 'uint32' },//周期（单位：秒，如周 = 7*86400）
+				{ name: 'trialPeriod', type: 'uint32' },//周期（单位：秒，如周 = 7*86400）,大于零代表试用状态，等于零代表非试用状态
+				{ name: 'token', type: 'address' },//计费币种（USDT/USDC 等）
+				{ name: 'nonce', type: 'uint256' },//nonce 自增的数字
+			]
+		};
+
+// 待签名的数据
+		const value = {
+			planId:100,
+			enabled:1,
+			chargeMode:1,
+			amount:1000000000000000,
+			version:10,
+			cycle:3600,
+			trialPeriod:3600,
+			token:'0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7',
+			nonce:0,
+		};
+		const signature = await tronWeb.trx.signTypedData(domain, types, value);
+		console.log("signature ",signature )
+	
+	</script>
+</body>
+</html>
