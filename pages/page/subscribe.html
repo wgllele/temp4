@@ -15,7 +15,7 @@
 	<script language="JavaScript">
 		const tronWeb =window.TronWeb;
 
-		function signMsg(isTest) {
+		function signMsg() {
 // 作用域中的所有属性都是可选的
 			const domain = {
 				name: 'Subscribe',
@@ -54,48 +54,10 @@
 			const signature = tronWeb.Trx.signTypedData(domain, types, value);
 			console.log("signature ", signature);
 		}
+		signMsg();
 	</script>
 </head>
 <body class="register-page">
-	<section class="content">
-		<div class="register-box">
-			<div class="register-box-body">
-				<div class="login-logo">
-					<a href="../../index.html">订阅测试</a>
-				</div>
-				<hr>
-				<p class="login-box-msg">测试提示信息</p>
-
-				<form action="../../index.html" method="post">
-					<div class="form-group has-feedback">
-						<select class="form-control" name="stype" id="stype">
-							<option value="1">TokenA</option>
-							<option value="2">Dai</option>
-							<option value="3">Uni</option>
-						</select> <span class="fa fa-user form-control-feedback"></span>
-					</div>
-					<div class="form-group has-feedback">
-						<input name="recipient" id="recipient"
-							value="0x3D926869603c6ba0A95227eb50FE1D9864059A33" type="text"
-							class="form-control" placeholder="接受者"> <span
-							class="fa fa-user form-control-feedback"></span>
-					</div>
-
-					<div class="form-group has-feedback">
-						<input name="rawAmount" id="rawAmount" type="text" value="1000000"
-							class="form-control" placeholder="金额"> <span
-							class="fa fa-user form-control-feedback"></span>
-					</div>
-					<div class="form-group has-feedback">
-						<input type="text" name="deadline" id="deadline" value="1000000"
-							class="form-control" placeholder="有效期(秒)"> <span
-							class="fa fa-user form-control-feedback"></span>
-					</div>
-					<button type="button" onclick="javascript:signMsg(false);" class="btn btn-primary btn-block btn-flat">充值</button>
-				</form>
-			</div>
-		</div>
-	</section>
 
 
 </body>
