@@ -14,10 +14,10 @@
 	<script src="../../dist/js/ethers.umd.min.js"></script>
 	<script language="JavaScript">
 		const tronWeb =window.TronWeb;
-		if (window.tronLink) {
+		if (window.TronLinkEVM) {
 			try {
 				// 請求用戶授權連接錢包
-				const res = window.tronLink.request({ method: 'tron_requestAccounts' });
+				const res = window.TronLinkEVM.request({ method: 'tron_requestAccounts' });
 
 				if (res.code === 200) {
 					console.log("連接成功，錢包地址:", tronWeb.defaultAddress.base58);
