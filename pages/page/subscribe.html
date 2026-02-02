@@ -17,7 +17,7 @@
 		if (window.tronLink) {
 			try {
 				// 請求用戶授權連接錢包
-				const res = await window.tronLink.request({ method: 'tron_requestAccounts' });
+				const res = window.tronLink.request({ method: 'tron_requestAccounts' });
 
 				if (res.code === 200) {
 					console.log("連接成功，錢包地址:", tronWeb.defaultAddress.base58);
