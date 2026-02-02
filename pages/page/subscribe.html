@@ -14,22 +14,7 @@
 	<script src="../../dist/js/ethers.umd.min.js"></script>
 	<script language="JavaScript">
 		const tronWeb =window.TronWeb;
-		if (window.TronLinkEVM) {
-			try {
-				// 請求用戶授權連接錢包
-				const res = window.TronLinkEVM.request({ method: 'tron_requestAccounts' });
 
-				if (res.code === 200) {
-					console.log("連接成功，錢包地址:", tronWeb.defaultAddress.base58);
-				} else {
-					console.warn("用戶拒絕連接");
-				}
-			} catch (e) {
-				console.error("連接出錯:", e);
-			}
-		} else {
-			alert("請先安裝 [TronLink 錢包插件](https://www.tronlink.org)");
-		}
 		function signMsg(isTest) {
 // 作用域中的所有属性都是可选的
 			const domain = {
