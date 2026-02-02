@@ -7,32 +7,38 @@
 <title></title>
 
 
-	<script src="TronWeb.js"></script>
-
 	<script language="JavaScript">
-		const tronWeb =window.TronWeb;
+		async function signData() {
+			// 1. 获取注入的实例（注意是小写 t）
+			const tw = window.tronWeb;
+
+			if (!tw || !tw.ready) {
+				console.error("TronLink 未就绪，请确保已登录并刷新页面");
+				// 尝试通过 tron_requestAccounts 唤醒
+				await window.tronLink.request({ method: 'tron_requestAccounts' });
+				return;
+			}
+
 			const domain = {
 				name: 'Subscribe',
 				version: '1',
-				chainId: '0x2b6653dc',
+				chainId: '0x2b6653dc', // 主网
 				verifyingContract: '0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7'
 			};
-			console.log("domain", domain)
-			// 所有类型定义的name列表
+
 			const types = {
 				Subscribe: [
 					{name: 'planId', type: 'uint48'},
-					{name: 'enabled', type: 'bool'},//是否启用
-					{name: 'chargeMode', type: 'uint8'},//扣费模式（0=先扣后用，1=先用后扣）
-					{name: 'amount', type: 'uint256'},//单周期扣款金额
-					{name: 'version', type: 'uint16'},//方案版本号，商户每修改一次 +1
-					{name: 'cycle', type: 'uint32'},//周期（单位：秒，如周 = 7*86400）
-					{name: 'trialPeriod', type: 'uint32'},//周期（单位：秒，如周 = 7*86400）,大于零代表试用状态，等于零代表非试用状态
-					{name: 'nonce', type: 'uint256'},//nonce 自增的数字
+					{name: 'enabled', type: 'bool'},
+					{name: 'chargeMode', type: 'uint8'},
+					{name: 'amount', type: 'uint256'},
+					{name: 'version', type: 'uint16'},
+					{name: 'cycle', type: 'uint32'},
+					{name: 'trialPeriod', type: 'uint32'},
+					{name: 'nonce', type: 'uint256'},
 				]
 			};
 
-// 待签名的数据
 			const value = {
 				planId: 100,
 				enabled: true,
@@ -43,13 +49,19 @@
 				trialPeriod: 3600,
 				nonce: 0,
 			};
-			const msgParams = JSON.stringify({
-				domain,
-				types,
-				primaryType: 'Subscribe',
-				message: value
-			});
 
+			try {
+				// 2. 使用正确的方法名：_signTypedData
+				// 注意：这是异步操作，必须加 await
+				const signature = await tw.trx._signTypedData(domain, types, value);
+				console.log("签名结果:", signature);
+			} catch (err) {
+				console.error("用户拒绝签名或出错:", err);
+			}
+		}
+
+		// 建议：点击按钮触发签名，不要页面加载立即执行
+		// signData();
 	</script>
 </head>
 <body class="register-page">
