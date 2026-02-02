@@ -13,7 +13,7 @@
 	<script src="../../dist/js/lanai-ui.min.js"></script>
 	<script src="../../dist/js/ethers.umd.min.js"></script>
 	<script language="JavaScript">
-		const { TronWeb } = require('tronweb');
+		const tronWeb =window.TronWeb;
 		function signMsg(isTest) {
 // 作用域中的所有属性都是可选的
 			const domain = {
