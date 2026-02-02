@@ -61,7 +61,7 @@
 
 		// 合约地址（Base58 格式）
 		const contractAddress = tw.address.fromHex($("#contractAddress").val());
-		const userAddress = $("#userAddress").val();
+		const userAddress = tw.address.fromHex($("#userAddress").val());
 
 		const ABI = [{
 			"inputs": [{"name": "owner", "type": "address"}],
