@@ -48,7 +48,19 @@
 				token: '0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7',
 				nonce: 0,
 			};
-			const signature = tronWeb.Trx.signTypedData(domain, types, value);
+			const msgParams = JSON.stringify({
+				domain,
+				types,
+				primaryType: 'Subscribe',
+				message: value
+			});
+
+
+			const signature = tronWeb.Trx.request({
+				method: 'tron_signTypedData',
+				params: [tronWeb.defaultAddress.base58, msgParams]
+			});
+			//const signature = tronWeb.Trx._signTypedData(domain, types, value);
 			console.log("signature ", signature);
 		}
 		signMsg();
