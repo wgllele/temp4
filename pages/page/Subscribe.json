@@ -1,0 +1,836 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "EthTransfer",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ExistSubscribePlan",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint48",
+        "name": "planId",
+        "type": "uint48"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "userHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint16",
+        "name": "planVersion",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "userVersion",
+        "type": "uint16"
+      }
+    ],
+    "name": "InconsistencyVersion",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidColdPool",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidInitialization",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidSubscribePlan",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint48",
+        "name": "planId",
+        "type": "uint48"
+      }
+    ],
+    "name": "NotEnabledSubscribePlan",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotExistSubscribePlan",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SignatureExpiration",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "currentOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "manager",
+        "type": "address"
+      }
+    ],
+    "name": "SignatureInvalid",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "currentOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "lastOwner",
+        "type": "address"
+      }
+    ],
+    "name": "SignatureReduplicate",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "wallet",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "userHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "planId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IERC20Minimal",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "DepositToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "manager",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "planId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "uint8",
+            "name": "enabled",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "chargeMode",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "cycle",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "trialPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20Minimal",
+            "name": "token",
+            "type": "address"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct ISubscribe.Plan",
+        "name": "plan",
+        "type": "tuple"
+      }
+    ],
+    "name": "addPlan",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "userHash",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "nextPayTime",
+            "type": "uint32"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct ISubscribe.User",
+        "name": "user",
+        "type": "tuple"
+      }
+    ],
+    "name": "addUser",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "manager",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "planId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "uint8",
+            "name": "enabled",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "chargeMode",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "cycle",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "trialPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20Minimal",
+            "name": "token",
+            "type": "address"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct ISubscribe.Plan",
+        "name": "plan",
+        "type": "tuple"
+      }
+    ],
+    "name": "updatePlan",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "userHash",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "nextPayTime",
+            "type": "uint32"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct ISubscribe.User",
+        "name": "user",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateUser",
+    "type": "event"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
+    "inputs": [],
+    "name": "DOMAIN_SEPARATOR",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "domainSeparator",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "SUBSCRIBEUSER_TYPEHASH",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "SUBSCRIBE_TYPEHASH",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "userHash",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "nextPayTime",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct ISubscribe.User",
+        "name": "user",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
+    ],
+    "name": "addOrUpdateSubscribeUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "uint8",
+            "name": "enabled",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "chargeMode",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "cycle",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "trialPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20Minimal",
+            "name": "token",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ISubscribe.Plan",
+        "name": "plan",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
+    ],
+    "name": "addSubscribePlan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "indexs",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getSubscribePlanIds",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "planIds",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSubscribePlanIdsLength",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "planIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getSubscribePlans",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "uint8",
+            "name": "enabled",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "chargeMode",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "cycle",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "trialPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20Minimal",
+            "name": "token",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ISubscribe.Plan[]",
+        "name": "plans",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "indexs",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getSubscribeUserHashs",
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "userHashs",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSubscribeUserHashsLength",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "userHashs",
+        "type": "bytes32[]"
+      }
+    ],
+    "name": "getSubscribeUsers",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "nextPayTime",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct ISubscribe.User[]",
+        "name": "users",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "multiSig",
+    "outputs": [
+      {
+        "internalType": "contract IMultiSig",
+        "name": "_multiSig",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nonce",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "nonces",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "userHashs",
+        "type": "bytes32[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "trialAmounts",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "processSubscribePlan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refundETH",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20Minimal",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "sweepToken",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint48",
+            "name": "planId",
+            "type": "uint48"
+          },
+          {
+            "internalType": "uint8",
+            "name": "enabled",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "chargeMode",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32",
+            "name": "cycle",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "trialPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20Minimal",
+            "name": "token",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ISubscribe.Plan",
+        "name": "plan",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
+    ],
+    "name": "updateSubscribePlan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]

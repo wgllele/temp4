@@ -1,0 +1,89 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "CloneArgumentsTooLong",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Create2EmptyBytecode",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FailedDeployment",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "needed",
+        "type": "uint256"
+      }
+    ],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IMultiSig",
+        "name": "_multiSig",
+        "type": "address"
+      }
+    ],
+    "name": "cloneDeterministic",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "instance",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IMultiSig",
+        "name": "_multiSig",
+        "type": "address"
+      }
+    ],
+    "name": "predictAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "subscribeTemplate",
+    "outputs": [
+      {
+        "internalType": "contract Subscribe",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

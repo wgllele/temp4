@@ -23,7 +23,47 @@
 				<div class="form-group has-feedback">
 					<input name="contractAddress" id="contractAddress"
 						   value="0x41e91a7411e56ce79e83570570f49b9fc35b7727c5" type="text"
-						   class="form-control" placeholder="订阅合约地址"> <span
+						   class="form-control" placeholder="订阅合约地址" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="userHash" id="userHash"
+						   value="0x41e91a7411e56ce79e83570570f49b9fc35b7727c5" type="text"
+						   class="form-control" placeholder="userHash" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="planId" id="planId"
+						   value="" type="text"
+						   class="form-control" placeholder="planId" /> <span
+						class="fa fa-user form-control-feedback" >
+					<input name="chargeMode" id="chargeMode"
+						   value="" type="text"
+						   class="form-control" placeholder="chargeMode" /> <span
+						class="fa fa-user form-control-feedback" >
+					<input name="amount" id="amount"
+						   value="" type="text"
+						   class="form-control" placeholder="amount" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="version" id="version"
+						   value="" type="text"
+						   class="form-control" placeholder="version" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="cycle" id="cycle"
+						   value="" type="text"
+						   class="form-control" placeholder="cycle" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="trialPeriod" id="trialPeriod"
+						   value="" type="text"
+						   class="form-control" placeholder="trialPeriod" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="token" id="token"
+						   value="" type="text"
+						   class="form-control" placeholder="token" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="nextPayTime" id="nextPayTime"
+						   value="" type="text"
+						   class="form-control" placeholder="nextPayTime" /> <span
+						class="fa fa-user form-control-feedback"></span>
+					<input name="nonce" id="nonce"
+						   value="" type="text"
+						   class="form-control" placeholder="nonce" /> <span
 						class="fa fa-user form-control-feedback"></span>
 				</div>
 				<div class="form-group has-feedback">
@@ -39,6 +79,8 @@
 <script src="../../dist/js/lanai-ui.min.js"></script>
 <script src="../../dist/js/ethers.umd.min.js"></script>
 <script language="JavaScript">
+
+	const ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EthTransfer","type":"error"},{"inputs":[],"name":"ExistSubscribePlan","type":"error"},{"inputs":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"bytes32","name":"userHash","type":"bytes32"},{"internalType":"uint16","name":"planVersion","type":"uint16"},{"internalType":"uint16","name":"userVersion","type":"uint16"}],"name":"InconsistencyVersion","type":"error"},{"inputs":[],"name":"InvalidColdPool","type":"error"},{"inputs":[],"name":"InvalidInitialization","type":"error"},{"inputs":[],"name":"InvalidSubscribePlan","type":"error"},{"inputs":[{"internalType":"uint48","name":"planId","type":"uint48"}],"name":"NotEnabledSubscribePlan","type":"error"},{"inputs":[],"name":"NotExistSubscribePlan","type":"error"},{"inputs":[],"name":"SignatureExpiration","type":"error"},{"inputs":[{"internalType":"address","name":"currentOwner","type":"address"},{"internalType":"address","name":"manager","type":"address"}],"name":"SignatureInvalid","type":"error"},{"inputs":[{"internalType":"address","name":"currentOwner","type":"address"},{"internalType":"address","name":"lastOwner","type":"address"}],"name":"SignatureReduplicate","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"wallet","type":"address"},{"indexed":true,"internalType":"bytes32","name":"userHash","type":"bytes32"},{"indexed":true,"internalType":"uint256","name":"planId","type":"uint256"},{"indexed":false,"internalType":"contract IERC20Minimal","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"DepositToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"manager","type":"address"},{"indexed":true,"internalType":"uint256","name":"planId","type":"uint256"},{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"uint8","name":"enabled","type":"uint8"},{"internalType":"uint8","name":"chargeMode","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"cycle","type":"uint32"},{"internalType":"uint32","name":"trialPeriod","type":"uint32"},{"internalType":"contract IERC20Minimal","name":"token","type":"address"}],"indexed":false,"internalType":"struct ISubscribe.Plan","name":"plan","type":"tuple"}],"name":"addPlan","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"userHash","type":"bytes32"},{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"address","name":"wallet","type":"address"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"nextPayTime","type":"uint32"}],"indexed":false,"internalType":"struct ISubscribe.User","name":"user","type":"tuple"}],"name":"addUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"manager","type":"address"},{"indexed":true,"internalType":"uint256","name":"planId","type":"uint256"},{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"uint8","name":"enabled","type":"uint8"},{"internalType":"uint8","name":"chargeMode","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"cycle","type":"uint32"},{"internalType":"uint32","name":"trialPeriod","type":"uint32"},{"internalType":"contract IERC20Minimal","name":"token","type":"address"}],"indexed":false,"internalType":"struct ISubscribe.Plan","name":"plan","type":"tuple"}],"name":"updatePlan","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"userHash","type":"bytes32"},{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"address","name":"wallet","type":"address"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"nextPayTime","type":"uint32"}],"indexed":false,"internalType":"struct ISubscribe.User","name":"user","type":"tuple"}],"name":"updateUser","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"domainSeparator","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"SUBSCRIBEUSER_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"SUBSCRIBE_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"userHash","type":"bytes32"},{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"address","name":"wallet","type":"address"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"nextPayTime","type":"uint32"}],"internalType":"struct ISubscribe.User","name":"user","type":"tuple"},{"internalType":"bytes","name":"signatures","type":"bytes"}],"name":"addOrUpdateSubscribeUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"uint8","name":"enabled","type":"uint8"},{"internalType":"uint8","name":"chargeMode","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"cycle","type":"uint32"},{"internalType":"uint32","name":"trialPeriod","type":"uint32"},{"internalType":"contract IERC20Minimal","name":"token","type":"address"}],"internalType":"struct ISubscribe.Plan","name":"plan","type":"tuple"},{"internalType":"bytes","name":"signatures","type":"bytes"}],"name":"addSubscribePlan","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"indexs","type":"uint256[]"}],"name":"getSubscribePlanIds","outputs":[{"internalType":"uint256[]","name":"planIds","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getSubscribePlanIdsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"planIds","type":"uint256[]"}],"name":"getSubscribePlans","outputs":[{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"uint8","name":"enabled","type":"uint8"},{"internalType":"uint8","name":"chargeMode","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"cycle","type":"uint32"},{"internalType":"uint32","name":"trialPeriod","type":"uint32"},{"internalType":"contract IERC20Minimal","name":"token","type":"address"}],"internalType":"struct ISubscribe.Plan[]","name":"plans","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"indexs","type":"uint256[]"}],"name":"getSubscribeUserHashs","outputs":[{"internalType":"bytes32[]","name":"userHashs","type":"bytes32[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getSubscribeUserHashsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32[]","name":"userHashs","type":"bytes32[]"}],"name":"getSubscribeUsers","outputs":[{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"address","name":"wallet","type":"address"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"nextPayTime","type":"uint32"}],"internalType":"struct ISubscribe.User[]","name":"users","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"multiSig","outputs":[{"internalType":"contract IMultiSig","name":"_multiSig","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"nonce","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32[]","name":"userHashs","type":"bytes32[]"},{"internalType":"uint256[]","name":"trialAmounts","type":"uint256[]"}],"name":"processSubscribePlan","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"refundETH","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"contract IERC20Minimal","name":"token","type":"address"}],"name":"sweepToken","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"components":[{"internalType":"uint48","name":"planId","type":"uint48"},{"internalType":"uint8","name":"enabled","type":"uint8"},{"internalType":"uint8","name":"chargeMode","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint16","name":"version","type":"uint16"},{"internalType":"uint32","name":"cycle","type":"uint32"},{"internalType":"uint32","name":"trialPeriod","type":"uint32"},{"internalType":"contract IERC20Minimal","name":"token","type":"address"}],"internalType":"struct ISubscribe.Plan","name":"plan","type":"tuple"},{"internalType":"bytes","name":"signatures","type":"bytes"}],"name":"updateSubscribePlan","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
 	async function getNonce() {
 		// 1. 获取注入的实例（注意是小写 t）
 		const tw = window.tronWeb;
@@ -53,14 +95,8 @@
 		// 合约地址（Base58 格式）
 		let contractAddress = $("#contractAddress").val().trim();
 		const userAddress = tw.defaultAddress.base58;
+
 		console.log(contractAddress)
-		const ABI = [{
-			"inputs": [{"name": "owner", "type": "address"}],
-			"name": "nonces",
-			"outputs": [{"name": "", "type": "uint256"}],
-			"stateMutability": "view",
-			"type": "function"
-		}];
 		if (contractAddress.startsWith('0x')) {
 			contractAddress = contractAddress.substring(2);
 		}
@@ -72,6 +108,7 @@
 		$("#nonceValue").html("账户["+userAddress+"]在合约[" +
 				base58Addr +
 				"]上的nonce为："+ nonce.toString());
+		$("#nonce").val(nonce.toString());
 	}
 	async function signMsg() {
 		// 1. 获取注入的实例（注意是小写 t）
@@ -83,44 +120,64 @@
 			await window.tronLink.request({ method: 'tron_requestAccounts' });
 			return;
 		}
+		// 合约地址（Base58 格式）
+		let contractAddress = $("#contractAddress").val().trim();
 
 		const domain = {
 			name: 'Subscribe',
 			version: '1',
 			chainId: '0x2b6653dc', // 主网
-			verifyingContract: '0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7'
+			verifyingContract: contractAddress
 		};
+		if (contractAddress.startsWith('0x')) {
+			contractAddress = contractAddress.substring(2);
+		}
+		const base58Addr = tw.address.fromHex(contractAddress);
+		const contract = await tronWeb.contract(ABI, base58Addr);
 
 		const types = {
-			Subscribe: [
-				{name: 'planId', type: 'uint48'},
-				{name: 'enabled', type: 'bool'},
-				{name: 'chargeMode', type: 'uint8'},
-				{name: 'amount', type: 'uint256'},
-				{name: 'version', type: 'uint16'},
-				{name: 'cycle', type: 'uint32'},
-				{name: 'trialPeriod', type: 'uint32'},
-				{name: 'token', type: 'address' },//计费币种（USDT/USDC 等）
-				{name: 'nonce', type: 'uint256'},
+			SubscribeUser: [
+				{ name: 'planId', type: 'uint48' },
+				{ name: 'enabled', type: 'bool' },//是否启用
+				{ name: 'chargeMode', type: 'uint8' },//扣费模式（0=先扣后用，1=先用后扣）
+				{ name: 'amount', type: 'uint256' },//单周期扣款金额
+				{ name: 'version', type: 'uint16' },//方案版本号，商户每修改一次 +1
+				{ name: 'cycle', type: 'uint32' },//周期（单位：秒，如周 = 7*86400）
+				{ name: 'trialPeriod', type: 'uint32' },//周期（单位：秒，如周 = 7*86400）,大于零代表试用状态，等于零代表非试用状态
+				{ name: 'token', type: 'address' },//计费币种（USDT/USDC 等）
+				{ name: 'wallet', type: 'address' },
+				{ name: 'nextPayTime', type: 'uint32' },//周期（单位：秒，如周 = 7*86400）
+				{ name: 'nonce', type: 'uint256' },//nonce 自增的数字
 			]
 		};
-
+		const userAddress = tw.defaultAddress.base58;
 		const value = {
-			planId: 100,
-			enabled: true,
-			chargeMode: 1,
-			amount: 1000000000000000,
-			version: 10,
-			cycle: 3600,
-			trialPeriod: 3600,
-			token: "0xA6cBb1e75d42b3abAE7c419E5ce5ceB2B0b2CEE7",
-			nonce: 0,
-		};
-
+			planId: $("#planId").val().trim(),
+			enabled:true,
+			chargeMode:$("#chargeMode").val().trim(),
+			amount:$("#amount").val().trim(),
+			version:$("#version").val().trim(),
+			cycle:$("#cycle").val().trim(),
+			trialPeriod:$("#trialPeriod").val().trim(),
+			token:$("#token").val().trim(),
+			wallet:userAddress,
+			nextPayTime:$("#nextPayTime").val().trim(),
+			nonce:$("#nonce").val().trim(),
+		}
+		const user={
+			"wallet":value.wallet,
+			"planId": value.planId,
+			"version": value.version,//方案版本号，必须与商户一致，否则无效
+			"nextPayTime": value.nextPayTime,//下次扣费时间 单位：秒，如周 = 7*86400）
+		}
+		const userHash=$("#userHash").val().trim()
 		try {
 			// 2. 使用正确的方法名：_signTypedData
 			// 注意：这是异步操作，必须加 await
 			const signature = await tw.trx._signTypedData(domain, types, value);
+			const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
+			//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
+			await contract.addOrUpdateSubscribeUser(user,userHash,signatureNew).call()
 			console.log("签名结果:", signature);
 		} catch (err) {
 			console.error("用户拒绝签名或出错:", err);
