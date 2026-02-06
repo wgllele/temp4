@@ -276,6 +276,7 @@
 			// 2. 使用正确的方法名：_signTypedData
 			// 注意：这是异步操作，必须加 await
 			const signature = await tw.trx._signTypedData(domain, types, value);
+			console.log(signature)
 			const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
 			//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
 			await contract.addSubscribePlan(plan,signatureNew).send()
