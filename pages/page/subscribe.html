@@ -274,6 +274,7 @@
 		console.log("签名结果:", signature);
 		const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
 		//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
+		console.log(contract.addSubscribePlan)
 		await contract.addSubscribePlan(plan,signatureNew).send()
 	}
 
