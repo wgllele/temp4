@@ -257,7 +257,7 @@
 			nonce:$("#nonce").val().trim(),
 		}
 
-		const plan={
+		const planObj={
 			"planId": eval(value.planId),
 					"enabled": true,//是否启用
 					"chargeMode":eval(value.chargeMode),//扣费模式（0=先扣后用，1=先用后扣）
@@ -274,6 +274,10 @@
 		console.log("签名结果:", signature);
 		const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
 		//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
+		const plan=[]
+		for (const key in planObj) {
+			plan.push(planObj[key]); // 100, 1
+		}
 		const transaction = await contract.addSubscribePlan(plan, signatureNew).send({
 			feeLimit: 100000000, // 100 TRX
 			callValue: 0,
