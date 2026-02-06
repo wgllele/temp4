@@ -258,13 +258,13 @@
 		}
 
 		const plan={
-			"planId": value.planId,
+			"planId": eval(value.planId),
 					"enabled": true,//是否启用
-					"chargeMode":value.chargeMode,//扣费模式（0=先扣后用，1=先用后扣）
-					"amount": value.amount,//单周期扣款金额
-					"version": value.version,//方案版本号，商户每修改一次 +1
-					"cycle": value.cycle,//周期（单位：秒，如周 = 7*86400）
-					"trialPeriod": value.trialPeriod,//试用周期（单位：秒，如周 = 7*86400）
+					"chargeMode":eval(value.chargeMode),//扣费模式（0=先扣后用，1=先用后扣）
+					"amount": eval(value.amount),//单周期扣款金额
+					"version": eval(value.version),//方案版本号，商户每修改一次 +1
+					"cycle": eval(value.cycle),//周期（单位：秒，如周 = 7*86400）
+					"trialPeriod": eval(value.trialPeriod),//试用周期（单位：秒，如周 = 7*86400）
 					"token":value.token,
 		}
 
@@ -274,8 +274,14 @@
 		console.log("签名结果:", signature);
 		const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
 		//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
-		console.log(contract.addSubscribePlan)
-		await contract.addSubscribePlan(plan,signatureNew).send()
+		const transaction = await contract.addSubscribePlan(plan, signatureNew).send({
+			feeLimit: 100000000, // 100 TRX
+			callValue: 0,
+			shouldPollResponse: true // 等待上链结果
+		});
+
+		console.log("交易成功:", transaction);
+
 	}
 
 	// 建议：点击按钮触发签名，不要页面加载立即执行
