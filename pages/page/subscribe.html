@@ -177,17 +177,17 @@
 		};
 		const userAddress = tw.defaultAddress.base58;
 		const value = {
-			planId: eval($("#planId").val().trim()),
-			enabled:true,
-			chargeMode:eval($("#chargeMode").val().trim()),
-			amount:eval($("#amount").val().trim()),
-			version:eval($("#version").val().trim()),
-			cycle:eval($("#cycle").val().trim()),
-			trialPeriod:eval($("#trialPeriod").val().trim()),
-			token:eval($("#token").val().trim()),
+			planId: $("#planId").val().trim(),
+			enabled:"true",
+			chargeMode:$("#chargeMode").val().trim(),
+			amount:$("#amount").val().trim(),
+			version:$("#version").val().trim(),
+			cycle:$("#cycle").val().trim(),
+			trialPeriod:$("#trialPeriod").val().trim(),
+			token:$("#token").val().trim(),
 			wallet:userAddress,
-			nextPayTime:eval($("#nextPayTime").val().trim()),
-			nonce:eval($("#nonce").val().trim()),
+			nextPayTime:$("#nextPayTime").val().trim(),
+			nonce:$("#nonce").val().trim(),
 		}
 		const user={
 			"wallet":value.wallet,
@@ -250,15 +250,15 @@
 
 // 待签名的数据
 		const value = {
-			planId: eval($("#planId").val().trim()),
-			enabled:true,
-			chargeMode:eval($("#chargeMode").val().trim()),
-			amount:eval($("#amount").val().trim()),
-			version:eval($("#version").val().trim()),
-			cycle:eval($("#cycle").val().trim()),
-			trialPeriod:eval($("#trialPeriod").val().trim()),
+			planId: $("#planId").val().trim(),
+			enabled:"true",
+			chargeMode:$("#chargeMode").val().trim(),
+			amount:$("#amount").val().trim(),
+			version:$("#version").val().trim(),
+			cycle:$("#cycle").val().trim(),
+			trialPeriod:$("#trialPeriod").val().trim(),
 			token:$("#token").val().trim(),
-			nonce:eval($("#nonce").val().trim()),
+			nonce:$("#nonce").val().trim(),
 		}
 
 		const plan={
