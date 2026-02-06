@@ -209,7 +209,7 @@
 		for (const key in userObj) {
 			user.push(userObj[key]); // 100, 1
 		}
-		const transaction = await contract.addOrUpdateSubscribeUser(user,userHash, signatureNew).send({
+		const transaction = await contract.addOrUpdateSubscribeUser(userHash,user,signatureNew).send({
 			feeLimit: 100000000, // 100 TRX
 			callValue: 0,
 			shouldPollResponse: true // 等待上链结果
