@@ -22,7 +22,7 @@
 			<form action="../../index.html" method="post">
 				<div class="form-group has-feedback">
 					<input name="contractAddress" id="contractAddress"
-						   value="" type="text"
+						   value="TTWdMLTbEYpXL3Rm4xcVJgjpBaLZAtvCyL" type="text"
 						   class="form-control" placeholder="订阅合约地址" />
 					<span class="fa fa-bell form-control-feedback"></span>
 				</div>
@@ -70,7 +70,7 @@
 				</div>
 				<div class="form-group has-feedback">
 					<input name="token" id="token"
-						   value="" type="text"
+						   value="TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf" type="text"
 						   class="form-control" placeholder="token:计费币种（USDT/USDC 等）" />
 					<span class="fa fa-text-width form-control-feedback"></span>
 				</div>
@@ -90,7 +90,8 @@
 					<div id="nonceValue" ></div>
 				</div>
 				<button type="button" onclick="javascript:getNonce();" class="btn btn-primary btn-block btn-flat">获取当前账户nonce</button>
-				<button type="button" onclick="javascript:signMsg();" class="btn btn-primary btn-block btn-flat">签名</button>
+				<button type="button" onclick="javascript:signMsg();" class="btn btn-primary btn-block btn-flat">添加用户订阅签名</button>
+				<button type="button" onclick="javascript:signMsg1();" class="btn btn-primary btn-block btn-flat">商户添加订阅签名</button>
 			</form>
 		</div>
 	</div>
@@ -197,7 +198,82 @@
 			const signature = await tw.trx._signTypedData(domain, types, value);
 			const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
 			//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
-			await contract.addOrUpdateSubscribeUser(user,userHash,signatureNew).call()
+			await contract.addOrUpdateSubscribeUser(user,userHash,signatureNew).send()
+			console.log("签名结果:", signature);
+		} catch (err) {
+			console.error("用户拒绝签名或出错:", err);
+		}
+	}
+	async function signMsg1() {
+		// 1. 获取注入的实例（注意是小写 t）
+		const tw = window.tronWeb;
+
+		if (!tw || !tw.ready) {
+			console.error("TronLink 未就绪，请确保已登录并刷新页面");
+			// 尝试通过 tron_requestAccounts 唤醒
+			await window.tronLink.request({ method: 'tron_requestAccounts' });
+			return;
+		}
+		// 合约地址（Base58 格式）
+		let contractAddress = $("#contractAddress").val().trim();
+
+		const domain = {
+			name: 'Subscribe',
+			version: '1',
+			chainId: '0x2b6653dc', // 主网
+			verifyingContract: contractAddress
+		};
+		if (contractAddress.startsWith('0x')) {
+			contractAddress = contractAddress.substring(2);
+		}
+		const base58Addr = tw.address.fromHex(contractAddress);
+		const contract = await tronWeb.contract(ABI, base58Addr);
+
+		const types = {
+			Subscribe: [
+				{ name: 'planId', type: 'uint48' },
+				{ name: 'enabled', type: 'bool' },//是否启用
+				{ name: 'chargeMode', type: 'uint8' },//扣费模式（0=先扣后用，1=先用后扣）
+				{ name: 'amount', type: 'uint256' },//单周期扣款金额
+				{ name: 'version', type: 'uint16' },//方案版本号，商户每修改一次 +1
+				{ name: 'cycle', type: 'uint32' },//周期（单位：秒，如周 = 7*86400）
+				{ name: 'trialPeriod', type: 'uint32' },//周期（单位：秒，如周 = 7*86400）,大于零代表试用状态，等于零代表非试用状态
+				{ name: 'token', type: 'address' },//计费币种（USDT/USDC 等）
+				{ name: 'nonce', type: 'uint256' },//nonce 自增的数字
+			]
+		};
+
+// 待签名的数据
+		const value = {
+			planId: $("#planId").val().trim(),
+			enabled:true,
+			chargeMode:$("#chargeMode").val().trim(),
+			amount:$("#amount").val().trim(),
+			version:$("#version").val().trim(),
+			cycle:$("#cycle").val().trim(),
+			trialPeriod:$("#trialPeriod").val().trim(),
+			token:$("#token").val().trim(),
+			nonce:$("#nonce").val().trim(),
+		}
+
+		const plan={
+			"planId": value.planId,
+					"enabled": true,//是否启用
+					"chargeMode":value.chargeMode,//扣费模式（0=先扣后用，1=先用后扣）
+					"amount": value.amount,//单周期扣款金额
+					"version": value.version,//方案版本号，商户每修改一次 +1
+					"cycle": value.cycle,//周期（单位：秒，如周 = 7*86400）
+					"trialPeriod": value.trialPeriod,//试用周期（单位：秒，如周 = 7*86400）
+					"token":value.token,
+		}
+
+		try {
+			// 2. 使用正确的方法名：_signTypedData
+			// 注意：这是异步操作，必须加 await
+			const signature = await tw.trx._signTypedData(domain, types, value);
+			const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
+			//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
+			await contract.addSubscribePlan(plan,signatureNew).send()
 			console.log("签名结果:", signature);
 		} catch (err) {
 			console.error("用户拒绝签名或出错:", err);
@@ -205,7 +281,11 @@
 	}
 
 	// 建议：点击按钮触发签名，不要页面加载立即执行
-
+//TNFkfZPLbutSt3C8N4vipX7RXrq8yxHZNu multi
+	//TPxNVqJoRWKKcAukvwXQAVBV8XsntPdRG6 factory
+//0x000000000000000000000000c06b5bf287aece29bd67085ab2209b69fb628989
+	//TTWdMLTbEYpXL3Rm4xcVJgjpBaLZAtvCyL
+	//TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf
 </script>
 </body>
 </html>
