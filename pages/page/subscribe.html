@@ -121,12 +121,15 @@
 
 		// 合约地址（Base58 格式）
 		let contractAddress = $("#contractAddress").val().trim();
+		let userHash = $("#userHash").val().trim();
 		const userAddress = tw.defaultAddress.base58;
 		const contract = await tronWeb.contract(ABI, contractAddress);
-		const nonce = await contract.nonces(userAddress).call();
+		const nonce = await contract.nonces(userHash).call();
 
 		console.log("当前 Nonce:", nonce.toString());
-		$("#nonceValue").html("账户["+userAddress+"]在合约[" +
+		$("#nonceValue").html("账户["+userAddress+"[" +
+				"" +userHash+
+				"]]在合约[" +
 				base58Addr +
 				"]上的nonce为："+ nonce.toString());
 		$("#nonce").val(nonce.toString());
@@ -148,7 +151,7 @@
 		const domain = {
 			name: 'Subscribe',
 			version: '1',
-			chainId: '0xcd8690dc', // Nile (测试网)
+			chainId: '3448148188', // Nile (测试网)
 			verifyingContract: contractAddressHex
 		};
 
