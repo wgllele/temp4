@@ -196,18 +196,13 @@
 			"nextPayTime": value.nextPayTime,//下次扣费时间 单位：秒，如周 = 7*86400）
 		}
 		const userHash=$("#userHash").val().trim()
-		try {
-			// 2. 使用正确的方法名：_signTypedData
-			// 注意：这是异步操作，必须加 await
-			const signature = await tw.trx._signTypedData(domain, types, value);
-			console.log("签名结果:", signature);
-			const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
-			//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
-			await contract.addOrUpdateSubscribeUser(user,userHash,signatureNew).send()
-
-		} catch (err) {
-			console.error("用户拒绝签名或出错:", err);
-		}
+		// 2. 使用正确的方法名：_signTypedData
+		// 注意：这是异步操作，必须加 await
+		const signature = await tw.trx._signTypedData(domain, types, value);
+		console.log("签名结果:", signature);
+		const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
+		//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
+		await contract.addOrUpdateSubscribeUser(user,userHash,signatureNew).send()
 	}
 	async function signMsg1() {
 		// 1. 获取注入的实例（注意是小写 t）
@@ -273,18 +268,13 @@
 					"token":value.token,
 		}
 
-		try {
-			// 2. 使用正确的方法名：_signTypedData
-			// 注意：这是异步操作，必须加 await
-			const signature = await tw.trx._signTypedData(domain, types, value);
-			console.log("签名结果:", signature);
-			const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
-			//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
-			await contract.addSubscribePlan(plan,signatureNew).send()
-
-		} catch (err) {
-			console.error("用户拒绝签名或出错:", err);
-		}
+		// 2. 使用正确的方法名：_signTypedData
+		// 注意：这是异步操作，必须加 await
+		const signature = await tw.trx._signTypedData(domain, types, value);
+		console.log("签名结果:", signature);
+		const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
+		//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
+		await contract.addSubscribePlan(plan,signatureNew).send()
 	}
 
 	// 建议：点击按钮触发签名，不要页面加载立即执行
