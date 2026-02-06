@@ -33,6 +33,12 @@
 					<span class="fa fa-bell form-control-feedback"></span>
 				</div>
 				<div class="form-group has-feedback">
+					<input name="userAddressHex" id="userAddressHex"
+						   value="0xC06b5bF287aeCE29bd67085Ab2209b69FB628989" type="text"
+						   class="form-control" placeholder="用户钱包地址Hex" />
+					<span class="fa fa-bell form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
 					<input name="userHash" id="userHash"
 						   value="0x1f222e25cc487ce694af2a894a046c2a5072801e23d105c56ff7a241de586393" type="text"
 						   class="form-control" placeholder="userHash" />
@@ -175,7 +181,7 @@
 				{ name: 'nonce', type: 'uint256' },//nonce 自增的数字
 			]
 		};
-		const userAddress = tw.defaultAddress.base58;
+
 		const value = {
 			planId: $("#planId").val().trim(),
 			enabled:"true",
@@ -184,12 +190,12 @@
 			version:$("#version").val().trim(),
 			cycle:$("#cycle").val().trim(),
 			trialPeriod:$("#trialPeriod").val().trim(),
-			token:$("#token").val().trim(),
-			wallet:userAddress,
+			token:$("#userAddressHex").val().trim(),
+			wallet:$("#token").val().trim(),
 			nextPayTime:$("#nextPayTime").val().trim(),
 			nonce:$("#nonce").val().trim(),
 		}
-		const user={
+		const userObj={
 			"wallet":value.wallet,
 			"planId": value.planId,
 			"version": value.version,//方案版本号，必须与商户一致，否则无效
@@ -201,8 +207,18 @@
 		const signature = await tw.trx._signTypedData(domain, types, value);
 		console.log("签名结果:", signature);
 		const signatureNew = signature.slice(0, 130)+'00'+signature.slice(130, 132)
-		//const userHash =await ethers.solidityPackedKeccak256([ "bytes32", "address" ], [userHashOrigin,user.wallet]);
-		await contract.addOrUpdateSubscribeUser(user,userHash,signatureNew).send()
+		const user=[]
+		for (const key in userObj) {
+			user.push(userObj[key]); // 100, 1
+		}
+		const transaction = await contract.addOrUpdateSubscribeUser(user,userHash, signatureNew).send({
+			feeLimit: 100000000, // 100 TRX
+			callValue: 0,
+			shouldPollResponse: true // 等待上链结果
+		});
+
+		console.log("交易成功:", transaction);
+
 	}
 	async function signMsg1() {
 		// 1. 获取注入的实例（注意是小写 t）
