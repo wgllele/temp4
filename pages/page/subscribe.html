@@ -260,11 +260,11 @@
 		const planObj={
 			"planId": eval(value.planId),
 					"enabled": 1,//是否启用
-					"chargeMode":eval(value.chargeMode),//扣费模式（0=先扣后用，1=先用后扣）
-					"amount": eval(value.amount),//单周期扣款金额
-					"version": eval(value.version),//方案版本号，商户每修改一次 +1
-					"cycle": eval(value.cycle),//周期（单位：秒，如周 = 7*86400）
-					"trialPeriod": eval(value.trialPeriod),//试用周期（单位：秒，如周 = 7*86400）
+					"chargeMode":value.chargeMode,//扣费模式（0=先扣后用，1=先用后扣）
+					"amount": value.amount,//单周期扣款金额
+					"version": value.version,//方案版本号，商户每修改一次 +1
+					"cycle": value.cycle,//周期（单位：秒，如周 = 7*86400）
+					"trialPeriod": value.trialPeriod,//试用周期（单位：秒，如周 = 7*86400）
 					"token":value.token,
 		}
 
