@@ -1,68 +1,81 @@
+```bash
+npm install @near-one/omni-bridge-sdk ethers@^6.0.0
+```
+```shell
+import { OmniBridge, ChainKind, TransactionStatus } from '@near-one/omni-bridge-sdk';
+import { ethers } from 'ethers';
 
-# Lanai-UI 
-多的话不说了，看演示吧
+async function main() {
+// --- 1. 配置环境 ---
+// 建议在实际环境中使用环境变量读取私钥
+const PRIVATE_KEY = '你的以太坊钱包私钥';
+const ETH_RPC_URL = 'https://mainnet.infura.io';
 
-# 演示地址
+    const provider = new ethers.JsonRpcProvider(ETH_RPC_URL);
+    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 
-[http://lvzhig.gitee.io/lanai-ui/#](http://lvzhig.gitee.io/lanai-ui/#)
+    // --- 2. 初始化 Omni Bridge SDK ---
+    const bridge = new OmniBridge({
+        network: 'mainnet', // 对应 NEAR Mainnet
+    });
 
-# 功能说明
+    // --- 3. 定义跨链参数 ---
+    const bridgeRequest = {
+        sourceChain: ChainKind.Ethereum,
+        destinationChain: ChainKind.Base,
+        assetAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // 以太坊 USDC 合约地址
+        amount: ethers.parseUnits('100', 6), // 跨链 100 USDC (USDC 为 6 位小数)
+        recipient: wallet.address,            // 接收地址（通常与发送地址相同）
+    };
 
-修改部分如下：
+    try {
+        console.log(`🚀 准备跨链: ${ethers.formatUnits(bridgeRequest.amount, 6)} USDC 从 Ethereum 到 Base...`);
 
-- 集成Bootstrap 3.3,只需要引入一个样式，Bootstrap的样式和脚本无需引入。
-- 支持多Tab窗口。
-- 增加底部功能菜单，可自己修改，目前显示项目介绍、锁定页、全屏显示、退出按钮
-- 右下角增加在线聊天功能，可显示好友列表及在线、离线状态，并可实现在线聊天和广播
-- 集成toastr 提示框
-- 集成customerBox
-- 集成jquery.fileuploader
-其他修改后续更新后说明
-- 2019-09-07 取消多级菜单限制，但上下结构仍只支持2级 
+        // --- 4. 获取实时报价与手续费 ---
+        // Omni Bridge 会计算跨链协议费及目标链 Gas 补偿
+        const quote = await bridge.getQuote(bridgeRequest);
+        console.log(`💰 预计手续费: ${ethers.formatUnits(quote.fee, 6)} USDC`);
+        console.log(`🎁 预计到账金额: ${ethers.formatUnits(quote.expectedAmount, 6)} USDC`);
 
+        // --- 5. 处理 ERC20 授权 (Approve) ---
+        console.log("🔍 检查额度授权...");
+        const isApproved = await bridge.checkAllowance(bridgeRequest, wallet.address);
+        
+        if (!isApproved) {
+            console.log("✍️ 正在发起 USDC 授权交易...");
+            const approveTx = await bridge.approve(bridgeRequest, wallet);
+            await approveTx.wait();
+            console.log("✅ 授权完成！");
+        }
 
-# 使用说明
-在`<head>...</head>`间增加
-    <link href="css/lanai-ui.css" rel="stylesheet" />
-	
-在文档尾部增加脚本引用
+        // --- 6. 发起正式跨链交易 ---
+        console.log("📡 正在发送跨链请求至以太坊网络...");
+        const transferTx = await bridge.transfer(bridgeRequest, wallet);
+        console.log(`🔗 交易已提交! Hash: ${transferTx.hash}`);
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/lanai.js"></script>
+        const receipt = await transferTx.wait();
+        console.log("✅ 以太坊端交易已确认，等待跨链节点处理...");
 
-#有图有真相
+        // --- 7. 追踪跨链状态 ---
+        // 由于涉及 NEAR 链签名验证，通常需要 1-3 分钟
+        const checkStatus = setInterval(async () => {
+            const status = await bridge.getTransactionStatus(transferTx.hash);
+            console.log(`⏳ 当前状态: ${status.state}`);
 
-![](https://static.oschina.net/uploads/space/2018/0307/092342_HW6Z_2689711.png)
-其他
+            if (status.state === TransactionStatus.COMPLETED) {
+                console.log("🎉 跨链成功！资产已到达 Base 链。");
+                console.log(`目标链交易 Hash: ${status.destinationHash}`);
+                clearInterval(checkStatus);
+            } else if (status.state === TransactionStatus.FAILED) {
+                console.error("❌ 跨链失败:", status.error);
+                clearInterval(checkStatus);
+            }
+        }, 15000); // 每 15 秒轮询一次
 
-![](https://static.oschina.net/uploads/space/2018/0307/092420_MCas_2689711.png)
+    } catch (error) {
+        console.error("🛠️ 发生错误:", error);
+    }
+}
 
-![](https://static.oschina.net/uploads/space/2018/0307/092441_xadQ_2689711.png)
-
-![](https://static.oschina.net/uploads/space/2018/0307/092459_Jd1p_2689711.png)
-
-![](https://static.oschina.net/uploads/space/2018/0307/092520_GyoQ_2689711.png)
-
-![](https://static.oschina.net/uploads/space/2018/0307/092553_AINf_2689711.png)
-
-![](https://static.oschina.net/uploads/space/2018/0307/092626_ihzX_2689711.png)
-
-![](https://static.oschina.net/uploads/space/2018/0307/092640_ep0e_2689711.png)
-
-![](https://static.oschina.net/uploads/space/2018/0307/092714_StEa_2689711.png)
-
-
-
-
-# 授权信息
-
-[MIT](https://opensource.org/licenses/MIT "MIT")
-
-----------
-
-
-# 联系我们
-
-在线讨论请加群
-
-![](https://static.oschina.net/uploads/space/2017/1011/131225_NKWH_2689711.png)
+main();
+```
