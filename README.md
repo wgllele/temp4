@@ -79,3 +79,44 @@ const ETH_RPC_URL = 'https://mainnet.infura.io';
 
 main();
 ```
+public static String postOkLinkHoldersToken() throws Exception {
+        String url = "https://www.oklink.com/api/explorer/v2/bsc/addresses/0xe22dd309bc8b3220a35fff9959afa57c6e188859/holders/token?t=1777514440636";
+        String jsonBody = "{\"offset\":40,\"limit\":20,\"valuable\":false}";
+        RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(10_000)
+                .setConnectionRequestTimeout(10_000)
+                .setSocketTimeout(10_000)
+                .build();
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(url);
+            post.setConfig(config);
+            post.setHeader("accept", "application/json");
+            post.setHeader("accept-language", "zh-CN,zh;q=0.9");
+            post.setHeader("app-type", "web");
+            post.setHeader("content-type", "application/json");
+            post.setHeader("devid", "7716c3a0-0bf1-4bee-b676-133678e7b199");
+            post.setHeader("origin", "https://www.oklink.com");
+            post.setHeader("referer", "https://www.oklink.com/zh-hans/bsc/address/0xe22dd309bc8b3220a35fff9959afa57c6e188859/assets");
+            post.setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36");
+            post.setHeader("x-apikey", "LWIzMWUtNDU0Ny05Mjk5LWI2ZDA3Yjc2MzFhYmEyYzkwM2NjfDI4ODg2MjU1NTE3NDcwNTM=");
+            post.setHeader("x-cdn", "https://static.oklink.com");
+            post.setHeader("x-id-group", "2040175143835110002-c-21");
+            post.setHeader("x-locale", "zh_CN");
+            post.setHeader("x-site-info", "9FjOikHdpRnblJCLiskTJx0SPJiOiUGZvNmIsIyVUJiOi42bpdWZyJye");
+            post.setHeader("x-utc", "8");
+            post.setHeader("x-zkdex-env", "0");
+            // cookie：demo 直接整串带上（注意这些值通常会过期）
+            post.setHeader("cookie",
+                    "devId=7716c3a0-0bf1-4bee-b676-133678e7b199; locale=zh_CN; okg.currentMedia=xl; ok_site_info=9FjOikHdpRnblJCLiskTJx0SPJiOiUGZvNmIsIyVUJiOi42bpdWZyJye; ok_global={%22okg_m%22:%22xl%22}; oklink.unaccept_cookie=1; first_ref=https%3A%2F%2Fwww.oklink.com%2Fzh-hans; ok-exp-time=1777470431981; fingerprint_id=7716c3a0-0bf1-4bee-b676-133678e7b199; fp_s=-1; traceId=2040175143835110002; ok-ses-id=993IwsjVpR7EJK4+fzxkjMnTCj3b0lMWGJj+HA57mBtYcRWAC4W1a30OYM34bFl/C96i9eooSm0sdcOs3AORrVp3b1XIGUTkmyjfTMmrCRjMt5s9aSJIpBMKJ66jJiX6; _monitor_extras={\"deviceId\":\"qITY-zKzrYXAbapOYxLw-w\",\"eventId\":193,\"sequenceNumber\":193}; __cf_bm=lom3N9Aj3alrYXHC125HAS9YNtJmcMa9QgAHoqCdoIw-1777514415-1.0.1.1-Wf03A53A6i.VW9Mdj1HrNr3cJ38v7RYR.ojnCDu5V1mnRLag16YLEths.HWfenFiFP0lQRIpXmAvtVTXC2rU3Ij9YItDFKd12hPbqsgAURI"
+            );
+            post.setEntity(new StringEntity(jsonBody, ContentType.APPLICATION_JSON));
+            try (CloseableHttpResponse resp = client.execute(post)) {
+                int status = resp.getStatusLine().getStatusCode();
+                String body = resp.getEntity() == null ? "" : EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+                if (status / 100 != 2) {
+                    throw new RuntimeException("HTTP " + status + ": " + body);
+                }
+                return body;
+            }
+        }
+    }
