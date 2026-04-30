@@ -82,7 +82,7 @@ main();
 
 ```shell
 public static String postOkLinkHoldersToken() throws Exception {
-        String url = "https://www.oklink.com/api/explorer/v2/bsc/addresses/0xe22dd309bc8b3220a35fff9959afa57c6e188859/holders/token?t=1777514440636";
+        String url = "https://www.oklink.com/api/explorer/v2/bsc/addresses//holders/token?t=1777514440636";
         String jsonBody = "{\"offset\":40,\"limit\":20,\"valuable\":false}";
         RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(10_000)
@@ -98,7 +98,7 @@ public static String postOkLinkHoldersToken() throws Exception {
             post.setHeader("content-type", "application/json");
             post.setHeader("devid", "7716c3a0-0bf1-4bee-b676-133678e7b199");
             post.setHeader("origin", "https://www.oklink.com");
-            post.setHeader("referer", "https://www.oklink.com/zh-hans/bsc/address/0xe22dd309bc8b3220a35fff9959afa57c6e188859/assets");
+            post.setHeader("referer", "https://www.oklink.com/zh-hans/bsc/address//assets");
             post.setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36");
             post.setHeader("x-apikey", "LWIzMWUtNDU0Ny05Mjk5LWI2ZDA3Yjc2MzFhYmEyYzkwM2NjfDI4ODg2MjU1NTE3NDcwNTM=");
             post.setHeader("x-cdn", "https://static.oklink.com");
