@@ -134,10 +134,11 @@ public class OkLinkStableDemo {
         String holder = "0xe22dd309bc8b3220a35fff9959afa57c6e188859";
         int offset = 40;
         int limit = 20;
-        String apiKey = "YOUR_X_APIKEY";
+        String apiKey = "LWIzMWUtNDU0Ny05Mjk5LWI2ZDA3Yjc2MzFhYmEyYzkwM2NjfDI4ODg2MzA4MjE2NjE1Njg=";
         System.out.println(postHoldersToken(holder, offset, limit, apiKey));
     }
 }
+
 
 
 ```
