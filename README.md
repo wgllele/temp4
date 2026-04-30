@@ -82,111 +82,69 @@ main();
 
 ```shell
 
-public class OkLinkHoldersDemo {
-    private static BasicClientCookie cookie(String name, String value, String domain, String path) {
-        BasicClientCookie c = new BasicClientCookie(name, value);
-        c.setDomain(domain);
-        c.setPath(path);
-        return c;
-    }
-    /**
-     * OKLink holders/token
-     *
-     * @param holder contract address, example: 0xe22dd3...
-     * @param offset paging offset, example: 40
-     * @param limit  paging limit, example: 20
-     * @param apiKey OKLink x-apikey header value
-     */
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import java.nio.charset.StandardCharsets;
+
+public class OkLinkStableDemo {
+
     public static String postHoldersToken(String holder, int offset, int limit, String apiKey) throws Exception {
-        if (holder == null || holder.trim().isEmpty()) {
-            throw new IllegalArgumentException("holder is empty");
-        }
-        if (!holder.startsWith("0x") && !holder.startsWith("0X")) {
-            holder = "0x" + holder.trim();
-        }
-        if (offset < 0) {
-            throw new IllegalArgumentException("offset must be >= 0");
-        }
-        if (limit <= 0) {
-            throw new IllegalArgumentException("limit must be > 0");
-        }
-        if (apiKey == null || apiKey.trim().isEmpty()) {
-            throw new IllegalArgumentException("apiKey is empty");
-        }
         long t = System.currentTimeMillis();
         String url = "https://www.oklink.com/api/explorer/v2/bsc/addresses/" + holder
                 + "/holders/token?t=" + t;
+
         String jsonBody = "{\"offset\":" + offset + ",\"limit\":" + limit + ",\"valuable\":false}";
-        // Cookies（可选：按你给的固定值；注意通常会过期）
-        BasicCookieStore cookieStore = new BasicCookieStore();
-        cookieStore.addCookie(cookie("devId", "7716c3a0-0bf1-4bee-b676-133678e7b199", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("locale", "zh_CN", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("okg.currentMedia", "xl", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("ok_site_info", "9FjOikHdpRnblJCLiskTJx0SPJiOiUGZvNmIsIyVUJiOi42bpdWZyJye", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("ok_global", "{%22okg_m%22:%22xl%22}", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("oklink.unaccept_cookie", "1", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("first_ref", "https%3A%2F%2Fwww.oklink.com%2Fzh-hans", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("fingerprint_id", "7716c3a0-0bf1-4bee-b676-133678e7b199", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("fp_s", "-1", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("traceId", "2040175143835110002", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("_monitor_extras", "{\"deviceId\":\"qITY-zKzrYXAbapOYxLw-w\",\"eventId\":193,\"sequenceNumber\":193}", "www.oklink.com", "/"));
-        cookieStore.addCookie(cookie("__cf_bm", "lom3N9Aj3alrYXHC125HAS9YNtJmcMa9QgAHoqCdoIw-1777514415-1.0.1.1-Wf03A53A6i.VW9Mdj1HrNr3cJ38v7RYR.ojnCDu5V1mnRLag16YLEths.HWfenFiFP0lQRIpXmAvtVTXC2rU3Ij9YItDFKd12hPbqsgAURI", ".oklink.com", "/"));
+
         RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(10_000)
                 .setConnectionRequestTimeout(10_000)
                 .setSocketTimeout(10_000)
                 .build();
+
+        // 关键：关闭连接复用，减少 reset（代价是慢一点）
         try (CloseableHttpClient client = HttpClients.custom()
-                .setDefaultCookieStore(cookieStore)
+                .disableConnectionState()
+                .disableCookieManagement()
                 .build()) {
-            HttpPost post = new HttpPost(url);
-            post.setConfig(config);
-            post.setHeader("accept", "application/json");
-            post.setHeader("accept-encoding", "gzip, deflate, br, zstd");
-            post.setHeader("accept-language", "zh-CN,zh;q=0.9");
-            post.setHeader("app-type", "web");
-            post.setHeader("devid", "7716c3a0-0bf1-4bee-b676-133678e7b199");
-            post.setHeader("origin", "https://www.oklink.com");
-            post.setHeader("referer", "https://www.oklink.com/zh-hans/bsc/address/" + holder + "/assets");
-            post.setHeader("sec-ch-ua", "\"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"");
-            post.setHeader("sec-ch-ua-mobile", "?0");
-            post.setHeader("sec-ch-ua-platform", "\"macOS\"");
-            post.setHeader("sec-fetch-dest", "empty");
-            post.setHeader("sec-fetch-mode", "cors");
-            post.setHeader("sec-fetch-site", "same-origin");
-            post.setHeader("x-apikey", apiKey.trim());
-            post.setHeader("x-cdn", "https://static.oklink.com");
-            post.setHeader("x-id-group", "2040175143835110002-c-21");
-            post.setHeader("x-locale", "zh_CN");
-            post.setHeader("x-simulated-trading", "undefined");
-            post.setHeader("x-site-info", "9FjOikHdpRnblJCLiskTJx0SPJiOiUGZvNmIsIyVUJiOi42bpdWZyJye");
-            post.setHeader("x-utc", "8");
-            post.setHeader("x-zkdex-env", "0");
-            post.setHeader("user-agent",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36");
-            post.setEntity(new StringEntity(jsonBody, ContentType.APPLICATION_JSON));
-            try (CloseableHttpResponse resp = client.execute(post)) {
-                int status = resp.getStatusLine().getStatusCode();
-                String body = resp.getEntity() == null ? "" : EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-                if (status / 100 != 2) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("HTTP ").append(status).append("\n");
-                    for (Header h : resp.getAllHeaders()) {
-                        sb.append(h.getName()).append(": ").append(h.getValue()).append("\n");
-                    }
-                    sb.append("\n").append(body);
-                    throw new RuntimeException(sb.toString());
+
+            for (int attempt = 1; attempt <= 2; attempt++) {
+                HttpPost post = new HttpPost(url);
+                post.setConfig(config);
+
+                post.setHeader("accept", "application/json");
+                post.setHeader("content-type", "application/json");
+                post.setHeader("origin", "https://www.oklink.com");
+                post.setHeader("referer", "https://www.oklink.com/");
+                post.setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36");
+                post.setHeader("x-apikey", apiKey);
+
+                // 不要声明 br/zstd
+                // post.setHeader("accept-encoding", "gzip, deflate");
+
+                // 避免长连接
+                post.setHeader("connection", "close");
+
+                post.setEntity(new StringEntity(jsonBody, ContentType.APPLICATION_JSON));
+
+                try (CloseableHttpResponse resp = client.execute(post)) {
+                    int status = resp.getStatusLine().getStatusCode();
+                    String body = resp.getEntity() == null ? "" : EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+                    if (status / 100 == 2) return body;
+                    throw new RuntimeException("HTTP " + status + ": " + body);
+                } catch (java.net.SocketException se) {
+                    if (attempt == 2) throw se;
+                    Thread.sleep(300); // 简单退避
                 }
-                return body;
             }
+            throw new RuntimeException("unreachable");
         }
-    }
-    public static void main(String[] args) throws Exception {
-        String holder = "0xe22dd309bc8b3220a35fff9959afa57c6e188859";
-        int offset = 40;
-        int limit = 20;
-        String apiKey = "YOUR_X_APIKEY";
-        System.out.println(postHoldersToken(holder, offset, limit, apiKey));
     }
 }
 ```
