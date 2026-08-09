@@ -20,6 +20,24 @@
 
 常用类：`org.web3j.protocol.Web3j`、`org.web3j.utils.Numeric`、`org.web3j.abi.FunctionEncoder`、`org.web3j.crypto.RawTransaction` / `TransactionEncoder`。
 
+### 部署地址
+
+```text
+CreateContractFactoryAddr 0xD902947686503e1150A07A146700415a4bcA0548
+"skimUtil0":"0x0000000054d45c2aA439D8bd4DEb002C8200e1eb",
+"skimUtil1":"0x9F00d458B0d6002A60e000004120493bB500F000",
+"skimUtilBatch":"0xe800D2776847CB110f00b38814A6000000760075",
+"utilTest":"0x2500874bcFA5006d1f9e70000000684300bA6f93",
+```
+
+| 名称 | 地址 |
+| --- | --- |
+| `CreateContractFactory` | `0xD902947686503e1150A07A146700415a4bcA0548` |
+| `skimUtil0` | `0x0000000054d45c2aA439D8bd4DEb002C8200e1eb` |
+| `skimUtil1` | `0x9F00d458B0d6002A60e000004120493bB500F000` |
+| `skimUtilBatch` | `0xe800D2776847CB110f00b38814A6000000760075` |
+| `utilTest` | `0x2500874bcFA5006d1f9e70000000684300bA6f93` |
+
 ---
 
 ## 1. 公共约定
@@ -109,6 +127,14 @@ public static String sendRawCalldata(
 
 ### 2.2 Java 打包
 
+`SkimUtil0` 与 `SkimUtil1` 的 **calldata 字节布局完全相同**，因此共用一个 `packSkim01`。  
+**方向不由 calldata 编码，而由交易的 `to` 决定：**
+
+| 发往合约 | 传入的 `reserve` | 行为 |
+| --- | --- | --- |
+| `SkimUtil0` 地址 | **`reserve1`** | 兑 token1 |
+| `SkimUtil1` 地址 | **`reserve0`** | 兑 token0 |
+
 ```java
 private static final BigInteger AMOUNT_OUT_MAX = new BigInteger("10000000000000000000"); // 10 ether
 private static final BigInteger RESERVE_MAX = new BigInteger("79228162514264337593543950335"); // uint96.max
@@ -122,7 +148,7 @@ static byte[] toFixed(byte[] src, int len) {
     return dst;
 }
 
-/** pair(20) + amountOut(8) + r(12) = 40 */
+/** pair(20) + amountOut(8) + r(12) = 40；0/1 共用，靠 to 地址区分方向 */
 public static byte[] packSkim01(String pair, BigInteger amountOut, BigInteger reserve) {
     if (amountOut.signum() < 0 || amountOut.compareTo(AMOUNT_OUT_MAX) > 0) {
         throw new IllegalArgumentException("amountOut");
@@ -145,13 +171,19 @@ public static String packSkim01Hex(String pair, BigInteger amountOut, BigInteger
 ### 2.3 调用示例
 
 ```java
-// 1) 读 pair.getReserves()
-// 2) 按方向取 r1 或 r0，与 amountOut 一并打包
-String data = SkimPacker.packSkim01Hex(pair, amountOut, reserve1); // SkimUtil0
-// String data = SkimPacker.packSkim01Hex(pair, amountOut, reserve0); // SkimUtil1
+// 1) 读 pair.getReserves() → (r0, r1)
+BigInteger amountOut = ...;
 
-sendRawCalldata(web3j, credentials, skimUtil0Address, data, chainId, nonce, gasPrice, gasLimit);
+// --- skim0：兑 token1，发往 SkimUtil0，打包 r1 ---
+String data0 = SkimPacker.packSkim01Hex(pair, amountOut, r1);
+sendRawCalldata(web3j, credentials, skimUtil0Address, data0, chainId, nonce, gasPrice, gasLimit);
+
+// --- skim1：兑 token0，发往 SkimUtil1，打包 r0 ---
+String data1 = SkimPacker.packSkim01Hex(pair, amountOut, r0);
+sendRawCalldata(web3j, credentials, skimUtil1Address, data1, chainId, nonce + 1, gasPrice, gasLimit);
 ```
+
+> Batch 才在 calldata 里带 `dir` 字节；单笔 `SkimUtil0`/`SkimUtil1` 用两个合约拆开，省掉方向字段。
 
 ### 2.4 行为要点
 
