@@ -54,55 +54,42 @@ contract SkimUtil1 {
     }
 }
 
-/// @notice 预估/强校验：转调链上 SkimUtil0/1，确认收款地址到账 ≥ `amountOut`，否则 revert。
-/// @dev calldata: `dir(1) || pair(20) || amountOut(8 uint64) || r(12 uint96)`，共 41 字节。
-///      dir=0 → SkimUtil0（兑 token1）；dir=1 → SkimUtil1（兑 token0）。
-///      后 40 字节原样转发给 util；用 `balanceOf(0xe22D…)` 校验到账 ≥ amountOut。
-///      供 eth_call 预估，或实发时避免 util 吞掉 swap 失败仍显示成功。
+/// @notice 预估/强校验：调用指定 SkimUtil，确认 RECEIVER 到账 ≥ amountOut，否则 revert。
+/// @dev `data` 与 util 相同：`pair(20) || amountOut(8 uint64) || r(12 uint96)`，共 40 字节。
+///      util0 → 校验 token1；util1 → 校验 token0。
 contract SkimUtilProbe {
     address private constant SKIM_UTIL0 = 0xb800006A0000572188F30045cf008656c976398A;
     address private constant SKIM_UTIL1 = 0x9900006600AaEeC900e5e8d96881c111c3000058;
     address private constant RECEIVER = 0xe22DD309bc8B3220a35FFf9959aFA57C6e188859;
 
-    receive() external payable {}
+    /// @param util SkimUtil0 或 SkimUtil1 地址
+    /// @param data 转发给 util 的 40 字节 calldata
+    function probe(address util, bytes calldata data) external {
+        require(data.length == 40, "len");
+        require(util == SKIM_UTIL0 || util == SKIM_UTIL1, "util");
 
-    fallback() external payable {
-        assembly {
-            // dir(1) || pair(20) || amountOut(8) || r(12)
-            let dir := byte(0, calldataload(0))
-            let pairAddr := shr(96, calldataload(1))
-            let amountOut := shr(192, calldataload(21))
+        address pair = address(bytes20(data[0:20]));
+        uint256 amountOut = uint256(uint64(bytes8(data[20:28])));
 
-            // token = dir==0 ? token1() : token0()
-            switch dir
-            case 0 {
-                mstore(0x00, 0xd21220a700000000000000000000000000000000000000000000000000000000)
-            }
-            default {
-                mstore(0x00, 0x0dfe168100000000000000000000000000000000000000000000000000000000)
-            }
-            if iszero(staticcall(gas(), pairAddr, 0x00, 0x04, 0x00, 0x20)) { revert(0, 0) }
-            let token := mload(0x00)
+        address token = util == SKIM_UTIL0
+            ? IUniswapV2PairLike(pair).token1()
+            : IUniswapV2PairLike(pair).token0();
+        uint256 balBefore = IERC20Like(token).balanceOf(RECEIVER);
 
-            // balBefore = balanceOf(RECEIVER)
-            mstore(0x00, 0x70a0823100000000000000000000000000000000000000000000000000000000)
-            mstore(0x04, RECEIVER)
-            if iszero(staticcall(gas(), token, 0x00, 0x24, 0x00, 0x20)) { revert(0, 0) }
-            let balBefore := mload(0x00)
+        // util 可能吞掉 swap 失败，以余额为准
+        (bool ignored,) = util.call(data);
+        ignored;
 
-            // forward payload[1:41] → SkimUtil0/1
-            calldatacopy(0x00, 1, 40)
-            let util := SKIM_UTIL0
-            if dir { util := SKIM_UTIL1 }
-            pop(call(gas(), util, 0, 0x00, 40, 0, 0))
-
-            // balAfter；不到账 amountOut 则 revert
-            mstore(0x00, 0x70a0823100000000000000000000000000000000000000000000000000000000)
-            mstore(0x04, RECEIVER)
-            if iszero(staticcall(gas(), token, 0x00, 0x24, 0x00, 0x20)) { revert(0, 0) }
-            let balAfter := mload(0x00)
-            // 到账 >= amountOut 即可（不必精确相等）
-            if lt(balAfter, add(balBefore, amountOut)) { revert(0, 0) }
-        }
+        uint256 balAfter = IERC20Like(token).balanceOf(RECEIVER);
+        require(balAfter >= balBefore + amountOut, "short");
     }
+}
+
+interface IUniswapV2PairLike {
+    function token0() external view returns (address);
+    function token1() external view returns (address);
+}
+
+interface IERC20Like {
+    function balanceOf(address account) external view returns (uint256);
 }
